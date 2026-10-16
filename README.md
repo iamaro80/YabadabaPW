@@ -3,18 +3,24 @@
 
 **YabadabaPW** is a fast, client-side, zero-tracking Single Page Application designed to generate cryptographically strong passwords tailored to any website's specific policy rules (such as mandatory start characters, custom symbol constraints, and ambiguous-character filtering) while keeping an offline staging vault.
 
-![Design](https://img.shields.io/badge/Design-Champagne%20%26%20Obsidian-262220)
 ![Security-Client%20Side](https://img.shields.io/badge/Security-Client--Side%20Web%20Crypto-emerald)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 
 ---
 
-## 🏛 Aesthetic: Champagne Beige & Obsidian Black
+## 🎨 Three Handcrafted Themes (Palettes 1, 2, and 6)
 
-Designed around soft tones, bold contrasts, and architectural tactile surfaces:
-- **Champagne Beige (Light Mode)**: Warm cashmere silk canvas, travertine cards, and obsidian typography.
-- **Obsidian Black (Dark Mode)**: Velvety volcanic basalt, dark sculpted cards, and champagne silk text.
-- **Editorial Typography**: Cormorant Garamond display serif paired with Plus Jakarta Sans and JetBrains Mono.
+YabadabaPW includes a live header palette switcher supporting three distinct aesthetic profiles:
+
+1. **❄️ Nordic Periwinkle (Palette 1)**:
+   - Light-mode clean Scandinavian SaaS security aesthetic.
+   - Primary: `#5B67A2` • Secondary: `#738BE7` • Canvas: `#F8F9FC` • Accents: `#BFC8EA` & `#7B86AA`
+2. **🌅 Sunset Coral & Plum (Palette 2)**:
+   - Rich twilight dark mode with energetic warm sunset tones.
+   - Canvas: `#35284A` • Primary Coral: `#FB7D79` • Accents: `#FB9D7E`, `#F8CD9E` & `#F8D9C3`
+3. **⚓️ Deep Navy & Sage Olive (Palette 6)**:
+   - Executive defense dark mode combining oceanic depth with organic sage.
+   - Canvas: `#040A1B` • Navy: `#335495` • Accents: `#91A471`, `#668BC4` & `#A5BECF`
 
 ---
 

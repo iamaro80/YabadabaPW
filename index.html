@@ -10,10 +10,10 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Google Fonts: Cormorant Garamond, Plus Jakarta Sans, JetBrains Mono -->
+    <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <script>
         tailwind.config = {
@@ -21,40 +21,8 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        serif: ['"Cormorant Garamond"', 'serif'],
                         sans: ['"Plus Jakarta Sans"', 'sans-serif'],
                         mono: ['"JetBrains Mono"', 'monospace'],
-                    },
-                    colors: {
-                        champagne: {
-                            50: '#FDFBF9',
-                            100: '#FAF6F1',
-                            200: '#F4ECE4',
-                            300: '#E8DCD1',
-                            400: '#D5C4B4',
-                            500: '#C2AC9A',
-                            600: '#A9917D',
-                            700: '#8A7360',
-                            800: '#695546',
-                            900: '#4A3B30',
-                        },
-                        obsidian: {
-                            50: '#F7F6F6',
-                            100: '#EBE9E8',
-                            200: '#D4D0CE',
-                            300: '#ABA4A1',
-                            400: '#7E7672',
-                            500: '#5C5450',
-                            600: '#453E3B',
-                            700: '#342E2C',
-                            800: '#262220',
-                            900: '#1A1716',
-                            950: '#12100F',
-                        }
-                    },
-                    boxShadow: {
-                        'sculptural-light': '0 12px 32px -6px rgba(184, 160, 142, 0.16), 0 4px 12px -2px rgba(184, 160, 142, 0.08)',
-                        'sculptural-dark': '0 14px 38px -8px rgba(0, 0, 0, 0.55), 0 4px 16px -2px rgba(0, 0, 0, 0.35)',
                     }
                 }
             }
@@ -62,13 +30,10 @@
     </script>
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .font-luxury-serif { font-family: 'Cormorant Garamond', Georgia, serif; }
-        
-        /* Custom smooth scrollbar */
         .custom-scroll::-webkit-scrollbar { width: 6px; }
         .custom-scroll::-webkit-scrollbar-track { background: transparent; }
         .custom-scroll::-webkit-scrollbar-thumb {
-            background-color: rgba(180, 160, 145, 0.3);
+            background-color: rgba(140, 150, 180, 0.3);
             border-radius: 9999px;
         }
     </style>
@@ -82,35 +47,124 @@
     <div id="root" class="h-full"></div>
 
     <script type="text/babel">
+        const PALETTES = {
+            nordic: {
+                id: 'nordic',
+                name: 'Nordic Periwinkle',
+                tag: 'Palette 1',
+                emoji: '❄️',
+                isDark: false,
+                bodyBg: 'bg-[#F8F9FC]',
+                bodyBgHex: '#F8F9FC',
+                headerBg: 'bg-[#FFFFFF]/90 border-[#BFC8EA]',
+                cardBg: 'bg-[#FFFFFF] border-[#BFC8EA] shadow-[0_10px_30px_rgba(123,134,170,0.12)]',
+                textPrimary: 'text-[#545051]',
+                textMuted: 'text-[#7B86AA]',
+                inputBg: 'bg-[#F8F9FC] border-[#BFC8EA] text-[#545051]',
+                btnPrimary: 'bg-[#5B67A2] hover:bg-[#4E598E] text-[#FFFFFF]',
+                btnSecondary: 'bg-[#FFFFFF] hover:bg-[#F8F9FC] border-[#BFC8EA] text-[#545051]',
+                accentText: 'text-[#5B67A2]',
+                badgeBorder: 'border-[#BFC8EA]',
+                badgeBg: 'bg-[#BFC8EA]/40 text-[#5B67A2]',
+                chipActive: 'bg-[#5B67A2] text-[#FFFFFF] border-[#5B67A2]',
+                chipInactive: 'bg-[#FFFFFF] text-[#545051] border-[#BFC8EA] hover:bg-[#F8F9FC]',
+                gaugeTrack: 'bg-[#BFC8EA]/30',
+                gaugeBar: 'bg-[#738BE7]',
+                accentColorHex: '#738BE7',
+                subCardBg: 'bg-[#F8F9FC]/70 border-[#BFC8EA]',
+                divider: 'border-[#BFC8EA]/60',
+                footerBorder: 'border-[#BFC8EA]/60',
+                tabActive: 'bg-[#5B67A2] text-white border-[#5B67A2]',
+                tabInactive: 'text-[#7B86AA] hover:text-[#545051]',
+            },
+            sunset: {
+                id: 'sunset',
+                name: 'Sunset Coral & Plum',
+                tag: 'Palette 2',
+                emoji: '🌅',
+                isDark: true,
+                bodyBg: 'bg-[#35284A]',
+                bodyBgHex: '#35284A',
+                headerBg: 'bg-[#291E3B]/90 border-[#816F90]',
+                cardBg: 'bg-[#271C38] border-[#816F90] shadow-[0_12px_36px_rgba(0,0,0,0.4)]',
+                textPrimary: 'text-[#F8D9C3]',
+                textMuted: 'text-[#FADDA5]',
+                inputBg: 'bg-[#1E152B] border-[#816F90]/70 text-[#F8D9C3]',
+                btnPrimary: 'bg-[#FB7D79] hover:bg-[#F56C68] text-[#271C38] font-bold',
+                btnSecondary: 'bg-[#35284A] hover:bg-[#3E2F56] border-[#816F90] text-[#F8D9C3]',
+                accentText: 'text-[#FB7D79]',
+                badgeBorder: 'border-[#816F90]',
+                badgeBg: 'bg-[#FB9D7E]/25 text-[#FB7D79]',
+                chipActive: 'bg-[#FB7D79] text-[#271C38] border-[#FB7D79] font-bold',
+                chipInactive: 'bg-[#1E152B] text-[#F8D9C3] border-[#816F90]/70 hover:bg-[#35284A]',
+                gaugeTrack: 'bg-[#1E152B]',
+                gaugeBar: 'bg-gradient-to-r from-[#FB9D7E] to-[#FB7D79]',
+                accentColorHex: '#FB7D79',
+                subCardBg: 'bg-[#1E152B]/70 border-[#816F90]/70',
+                divider: 'border-[#816F90]/50',
+                footerBorder: 'border-[#816F90]/50',
+                tabActive: 'bg-[#FB7D79] text-[#271C38] border-[#FB7D79] font-bold',
+                tabInactive: 'text-[#816F90] hover:text-[#F8D9C3]',
+            },
+            navy: {
+                id: 'navy',
+                name: 'Deep Navy & Sage Olive',
+                tag: 'Palette 6',
+                emoji: '⚓️',
+                isDark: true,
+                bodyBg: 'bg-[#040A1B]',
+                bodyBgHex: '#040A1B',
+                headerBg: 'bg-[#0A122A]/90 border-[#334465]',
+                cardBg: 'bg-[#0C1429] border-[#334465] shadow-[0_14px_40px_rgba(0,0,0,0.6)]',
+                textPrimary: 'text-[#FEFEFE]',
+                textMuted: 'text-[#A5BECF]',
+                inputBg: 'bg-[#040A1B] border-[#334465] text-[#FEFEFE]',
+                btnPrimary: 'bg-[#335495] hover:bg-[#2A457D] text-[#FEFEFE] border border-[#668BC4]/30',
+                btnSecondary: 'bg-[#0A122A] hover:bg-[#121E3E] border-[#334465] text-[#FEFEFE]',
+                accentText: 'text-[#91A471]',
+                badgeBorder: 'border-[#334465]',
+                badgeBg: 'bg-[#91A471]/20 text-[#91A471]',
+                chipActive: 'bg-[#91A471] text-[#040A1B] border-[#91A471] font-bold',
+                chipInactive: 'bg-[#040A1B] text-[#A5BECF] border-[#334465] hover:bg-[#0A122A]',
+                gaugeTrack: 'bg-[#040A1B]',
+                gaugeBar: 'bg-[#91A471]',
+                accentColorHex: '#91A471',
+                subCardBg: 'bg-[#040A1B]/70 border-[#334465]',
+                divider: 'border-[#334465]/60',
+                footerBorder: 'border-[#334465]/60',
+                tabActive: 'bg-[#335495] text-white border-[#668BC4]/40 font-bold',
+                tabInactive: 'text-[#A5BECF] hover:text-white',
+            }
+        };
+
         function App() {
-            // Theme state with localStorage persistence and system preference fallback
-            const [isDarkMode, setIsDarkMode] = React.useState(() => {
+            // Theme state supporting Nordic (1), Sunset (2), and Navy Sage (6)
+            const [themeKey, setThemeKey] = React.useState(() => {
                 try {
-                    const saved = localStorage.getItem('yabadabapw_theme');
-                    if (saved !== null) return saved === 'obsidian';
-                    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    const saved = localStorage.getItem('yabadabapw_palette');
+                    if (saved && PALETTES[saved]) return saved;
+                    return 'nordic';
                 } catch (e) {
-                    return false;
+                    return 'nordic';
                 }
             });
 
-            // Synchronize dark class on HTML root and update body background
+            const t = PALETTES[themeKey] || PALETTES.nordic;
+
+            // Synchronize document dark class and background color
             React.useEffect(() => {
                 try {
-                    if (isDarkMode) {
+                    if (t.isDark) {
                         document.documentElement.classList.add('dark');
-                        document.body.classList.add('bg-obsidian-950');
-                        document.body.classList.remove('bg-[#F5EFEB]');
                     } else {
                         document.documentElement.classList.remove('dark');
-                        document.body.classList.remove('bg-obsidian-950');
-                        document.body.classList.add('bg-[#F5EFEB]');
                     }
-                    localStorage.setItem('yabadabapw_theme', isDarkMode ? 'obsidian' : 'champagne');
+                    document.body.className = `h-full antialiased transition-colors duration-300 ${t.bodyBg}`;
+                    localStorage.setItem('yabadabapw_palette', themeKey);
                 } catch (e) {
                     console.error('Failed to sync theme', e);
                 }
-            }, [isDarkMode]);
+            }, [themeKey, t]);
 
             const [password, setPassword] = React.useState('');
             const [length, setLength] = React.useState(16);
@@ -176,7 +230,7 @@
                 return true;
             };
 
-            // Calculate mathematical entropy in bits and assign luxury tier
+            // Calculate mathematical entropy in bits
             const getStrengthMetrics = () => {
                 if (!password || password.startsWith('Error')) {
                     return { bits: 0, label: 'None', width: '0%' };
@@ -250,7 +304,7 @@
                     resultChars.push(category[randomIndex]);
                 }
 
-                // 2. Fill remainder of password length randomly from the combined pool
+                // 2. Fill remainder randomly
                 for (let i = resultChars.length; i < effectiveLength; i++) {
                     const randomIndex = randomValues[i] % charPool.length;
                     resultChars.push(charPool[randomIndex]);
@@ -366,7 +420,7 @@
 
             const downloadListAsTxt = () => {
                 if (!Array.isArray(savedPasswords) || savedPasswords.length === 0) return;
-                const fileContent = `# YabadabaPW Vault Export\n# Exported on ${new Date().toLocaleString()}\n\n` + savedPasswords.join('\n');
+                const fileContent = `# YabadabaPW Vault Export\n# Theme: ${t.name}\n# Exported on ${new Date().toLocaleString()}\n\n` + savedPasswords.join('\n');
                 const blob = new Blob([fileContent], { type: 'text/plain;charset=utf-8' });
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
@@ -382,80 +436,95 @@
             const isError = !password || password.startsWith('Error');
 
             return (
-                <div className={`${isDarkMode ? 'dark bg-obsidian-950 text-champagne-100' : 'bg-[#F5EFEB] text-obsidian-800'} min-h-full flex flex-col justify-between transition-colors duration-300 font-sans`}>
+                <div className={`${t.bodyBg} ${t.textPrimary} min-h-full flex flex-col justify-between transition-colors duration-300 font-sans`}>
                     
-                    {/* Top App Bar (Champagne Travertine / Obsidian Basalt) */}
-                    <header className={`border-b ${isDarkMode ? 'border-obsidian-800 bg-obsidian-900/90' : 'border-champagne-300/70 bg-[#FAF6F0]/90'} sticky top-0 z-20 backdrop-blur-md transition-colors`}>
-                        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+                    {/* Top App Bar with 3-Palette Switcher */}
+                    <header className={`border-b ${t.headerBg} sticky top-0 z-20 backdrop-blur-md transition-colors`}>
+                        <div className="max-w-4xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0">
                             <div className="flex items-center space-x-3.5">
-                                <div className={`w-11 h-11 rounded-full ${isDarkMode ? 'bg-champagne-200 text-obsidian-950' : 'bg-obsidian-900 text-champagne-100'} flex items-center justify-center font-luxury-serif font-bold text-xl shadow-sm transition-all`}>
+                                <div className={`w-10 h-10 rounded-2xl ${t.btnPrimary} flex items-center justify-center font-bold text-lg shadow-sm transition-all`}>
                                     YP
                                 </div>
                                 <div>
-                                    <h1 className={`font-luxury-serif text-2xl font-bold tracking-wide ${isDarkMode ? 'text-champagne-100' : 'text-obsidian-900'} leading-none`}>
-                                        YabadabaPW
-                                    </h1>
-                                    <p className={`text-[10px] uppercase tracking-widest font-semibold mt-1 ${isDarkMode ? 'text-champagne-400' : 'text-obsidian-500'}`}>
+                                    <div className="flex items-center space-x-2">
+                                        <h1 className="text-xl font-bold tracking-tight leading-none">
+                                            YabadabaPW
+                                        </h1>
+                                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${t.badgeBg} ${t.badgeBorder}`}>
+                                            {t.tag}
+                                        </span>
+                                    </div>
+                                    <p className={`text-[11px] font-medium mt-1 ${t.textMuted}`}>
                                         Custom Rule-Compliant Strong Password Generator
                                     </p>
                                 </div>
                             </div>
 
-                            {/* Theme Toggle Button */}
-                            <button
-                                onClick={() => setIsDarkMode(!isDarkMode)}
-                                className={`px-4 py-2 rounded-full border text-xs font-semibold tracking-wider transition-all flex items-center space-x-2 shadow-sm ${
-                                    isDarkMode
-                                        ? 'bg-obsidian-800/80 border-obsidian-700 text-champagne-200 hover:bg-obsidian-800'
-                                        : 'bg-white/80 border-champagne-300 text-obsidian-800 hover:bg-white'
-                                }`}
-                                aria-label="Toggle theme"
-                            >
-                                <span>{isDarkMode ? '○' : '◐'}</span>
-                                <span>{isDarkMode ? 'Champagne' : 'Obsidian'}</span>
-                            </button>
+                            {/* 3-Palette Switcher Buttons */}
+                            <div className="flex items-center space-x-1.5 p-1 rounded-2xl border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5">
+                                <button
+                                    onClick={() => setThemeKey('nordic')}
+                                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1 border ${
+                                        themeKey === 'nordic' ? PALETTES.nordic.tabActive : PALETTES.nordic.tabInactive + ' border-transparent'
+                                    }`}
+                                    title="Palette 1: Nordic Periwinkle (Light Mode)"
+                                >
+                                    <span>❄️</span>
+                                    <span>Nordic</span>
+                                </button>
+                                <button
+                                    onClick={() => setThemeKey('sunset')}
+                                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1 border ${
+                                        themeKey === 'sunset' ? PALETTES.sunset.tabActive : PALETTES.sunset.tabInactive + ' border-transparent'
+                                    }`}
+                                    title="Palette 2: Sunset Coral & Plum (Dark Mode)"
+                                >
+                                    <span>🌅</span>
+                                    <span>Sunset</span>
+                                </button>
+                                <button
+                                    onClick={() => setThemeKey('navy')}
+                                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1 border ${
+                                        themeKey === 'navy' ? PALETTES.navy.tabActive : PALETTES.navy.tabInactive + ' border-transparent'
+                                    }`}
+                                    title="Palette 6: Deep Navy & Sage (Dark Mode)"
+                                >
+                                    <span>⚓️</span>
+                                    <span>Navy Sage</span>
+                                </button>
+                            </div>
                         </div>
                     </header>
 
                     {/* Main Content Area */}
                     <main className="max-w-3xl mx-auto px-6 py-8 w-full flex-grow space-y-6">
                         
-                        {/* Sculpted Password Viewport Card */}
-                        <div className={`rounded-[32px] p-7 border transition-all ${
-                            isDarkMode
-                                ? 'bg-obsidian-900 border-obsidian-800/80 shadow-sculptural-dark'
-                                : 'bg-[#FAF6F0] border-champagne-300/80 shadow-sculptural-light'
-                        }`}>
+                        {/* Password Viewport Card */}
+                        <div className={`rounded-3xl p-6 sm:p-7 border transition-all ${t.cardBg}`}>
                             <div className="flex justify-between items-center mb-3">
                                 <div className="flex items-center space-x-2">
-                                    <span className={`w-2 h-2 rounded-full ${isDarkMode ? 'bg-champagne-400' : 'bg-champagne-600'}`}></span>
-                                    <label className={`text-xs font-semibold uppercase tracking-widest ${isDarkMode ? 'text-champagne-400' : 'text-obsidian-500'}`}>
-                                        Generated Key
+                                    <span className={`w-2 h-2 rounded-full ${t.accentBg}`}></span>
+                                    <label className={`text-xs font-bold uppercase tracking-wider ${t.textMuted}`}>
+                                        Generated Password
                                     </label>
                                 </div>
                                 {!isError && (
-                                    <div className={`px-3 py-1 rounded-full text-xs font-medium tracking-wide border flex items-center space-x-1.5 ${
-                                        isDarkMode
-                                            ? 'bg-obsidian-800 border-obsidian-700 text-champagne-300'
-                                            : 'bg-champagne-200/60 border-champagne-300 text-obsidian-700'
-                                    }`}>
-                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>
-                                        <span className="font-luxury-serif font-bold text-sm tracking-wide">{strength.bits} BITS</span>
-                                        <span className="text-[11px] opacity-40">•</span>
+                                    <div className={`px-3 py-1 rounded-full text-xs font-bold border flex items-center space-x-1.5 ${t.badgeBg} ${t.badgeBorder}`}>
+                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
+                                        <span className="font-mono text-xs">{strength.bits} BITS</span>
+                                        <span className="opacity-40">•</span>
                                         <span>{strength.label}</span>
                                     </div>
                                 )}
                             </div>
 
-                            {/* Password Box & Primary Action Buttons */}
+                            {/* Password Box & Actions */}
                             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                                 <div 
                                     className={`rounded-2xl px-5 py-4 font-mono text-xl sm:text-2xl tracking-wider flex-grow select-all break-all border transition-colors ${
                                         isError
                                             ? 'border-rose-500/50 text-rose-500 bg-rose-500/10'
-                                            : isDarkMode 
-                                                ? 'bg-obsidian-950/90 border-obsidian-800 text-champagne-100' 
-                                                : 'bg-white/90 border-champagne-300 text-obsidian-900'
+                                            : t.inputBg
                                     }`}
                                 >
                                     {String(password || '')}
@@ -464,14 +533,12 @@
                                     <button
                                         onClick={() => copyToClipboard(password)}
                                         disabled={isError}
-                                        className={`px-6 py-4 font-semibold text-xs uppercase tracking-widest rounded-2xl transition-all flex items-center justify-center space-x-2 shadow-sm ${
+                                        className={`px-6 py-4 font-bold text-xs uppercase tracking-wider rounded-2xl transition-all flex items-center justify-center space-x-2 shadow-sm ${
                                             isError
                                                 ? 'opacity-40 cursor-not-allowed bg-zinc-300 text-zinc-500'
                                                 : copied 
-                                                    ? 'bg-emerald-700 text-white' 
-                                                    : isDarkMode 
-                                                        ? 'bg-champagne-200 hover:bg-champagne-100 text-obsidian-950' 
-                                                        : 'bg-obsidian-900 hover:bg-obsidian-800 text-champagne-100'
+                                                    ? 'bg-emerald-600 text-white' 
+                                                    : t.btnPrimary
                                         }`}
                                     >
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -488,11 +555,7 @@
                                         onClick={saveToList}
                                         disabled={isError}
                                         className={`p-4 rounded-2xl border transition-all flex items-center justify-center shadow-sm ${
-                                            isError
-                                                ? 'opacity-40 cursor-not-allowed'
-                                                : isDarkMode 
-                                                    ? 'bg-obsidian-800 hover:bg-obsidian-750 border-obsidian-700 text-champagne-200' 
-                                                    : 'bg-white/80 hover:bg-white border-champagne-300 text-obsidian-800'
+                                            isError ? 'opacity-40 cursor-not-allowed' : t.btnSecondary
                                         }`}
                                         title="Save password to vault"
                                     >
@@ -503,11 +566,7 @@
 
                                     <button
                                         onClick={generatePassword}
-                                        className={`p-4 rounded-2xl border transition-all flex items-center justify-center shadow-sm active:rotate-180 duration-500 ${
-                                            isDarkMode 
-                                                ? 'bg-obsidian-800 hover:bg-obsidian-750 border-obsidian-700 text-champagne-200' 
-                                                : 'bg-white/80 hover:bg-white border-champagne-300 text-obsidian-800'
-                                        }`}
+                                        className={`p-4 rounded-2xl border transition-all flex items-center justify-center shadow-sm active:rotate-180 duration-500 ${t.btnSecondary}`}
                                         title="Generate new key"
                                     >
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -517,16 +576,12 @@
                                 </div>
                             </div>
 
-                            {/* Minimalist Segmented Line Gauge */}
+                            {/* Entropy Gauge Line */}
                             {!isError && (
                                 <div className="mt-4">
-                                    <div className={`w-full h-1.5 rounded-full overflow-hidden ${isDarkMode ? 'bg-obsidian-800' : 'bg-champagne-200'}`}>
+                                    <div className={`w-full h-1.5 rounded-full overflow-hidden ${t.gaugeTrack}`}>
                                         <div 
-                                            className={`h-full transition-all duration-300 rounded-full ${
-                                                isDarkMode 
-                                                    ? 'bg-gradient-to-r from-champagne-400 to-champagne-100' 
-                                                    : 'bg-gradient-to-r from-champagne-600 to-obsidian-900'
-                                            }`}
+                                            className={`h-full transition-all duration-300 rounded-full ${t.gaugeBar}`}
                                             style={{ width: strength.width }}
                                         />
                                     </div>
@@ -534,52 +589,38 @@
                             )}
 
                             {saveNotification && (
-                                <p className="text-xs font-medium mt-3 text-emerald-600 dark:text-emerald-400 flex items-center space-x-1">
+                                <p className="text-xs font-semibold mt-3 text-emerald-500 flex items-center space-x-1">
                                     <span>✓</span>
                                     <span>Preserved in your local vault below.</span>
                                 </p>
                             )}
                         </div>
 
-                        {/* Sculptural Configuration Dashboard Card */}
-                        <div className={`rounded-[32px] p-7 border space-y-6 transition-all ${
-                            isDarkMode 
-                                ? 'bg-obsidian-900 border-obsidian-800/80 shadow-sculptural-dark' 
-                                : 'bg-[#FAF6F0] border-champagne-300/80 shadow-sculptural-light'
-                        }`}>
+                        {/* Configuration Dashboard Card */}
+                        <div className={`rounded-3xl p-6 sm:p-7 border space-y-6 transition-all ${t.cardBg}`}>
                             
-                            {/* Length Slider & Quick Chips */}
+                            {/* Length Slider & Quick Preset Chips */}
                             <div className="space-y-3">
-                                <div className="flex justify-between items-center text-xs font-semibold uppercase tracking-widest">
-                                    <span className={isDarkMode ? 'text-champagne-300' : 'text-obsidian-600'}>
-                                        Length Specifications
+                                <div className="flex justify-between items-center text-xs font-bold uppercase tracking-wider">
+                                    <span className={t.textMuted}>
+                                        Password Length
                                     </span>
                                     <div className="flex items-center space-x-2">
-                                        <div className="flex space-x-1">
+                                        <div className="flex space-x-1 font-mono">
                                             {[12, 16, 24, 32].map((preset) => (
                                                 <button
                                                     key={preset}
                                                     type="button"
                                                     onClick={() => setLength(preset)}
-                                                    className={`px-2.5 py-1 rounded-lg text-xs font-mono transition-all border ${
-                                                        length === preset
-                                                            ? isDarkMode 
-                                                                ? 'bg-champagne-200 text-obsidian-950 border-champagne-200 font-bold' 
-                                                                : 'bg-obsidian-900 text-champagne-100 border-obsidian-900 font-bold'
-                                                            : isDarkMode 
-                                                                ? 'border-obsidian-800 text-champagne-400 hover:bg-obsidian-800' 
-                                                                : 'border-champagne-300 text-obsidian-600 hover:bg-champagne-200/60'
+                                                    className={`px-2.5 py-1 rounded-lg text-xs transition-all border ${
+                                                        length === preset ? t.chipActive : t.chipInactive
                                                     }`}
                                                 >
                                                     {preset}
                                                 </button>
                                             ))}
                                         </div>
-                                        <span className={`font-mono px-3 py-1 rounded-full border text-xs font-bold ${
-                                            isDarkMode 
-                                                ? 'bg-obsidian-950 border-obsidian-800 text-champagne-200' 
-                                                : 'bg-white/80 border-champagne-300 text-obsidian-900'
-                                        }`}>
+                                        <span className={`font-mono px-3 py-1 rounded-full border text-xs font-bold ${t.badgeBg} ${t.badgeBorder}`}>
                                             {String(length)} Chars
                                         </span>
                                     </div>
@@ -590,13 +631,10 @@
                                     max="64"
                                     value={length}
                                     onChange={(e) => setLength(parseInt(e.target.value, 10))}
-                                    className={`w-full h-1.5 rounded-lg appearance-none cursor-pointer ${
-                                        isDarkMode 
-                                            ? 'bg-obsidian-800 accent-champagne-300' 
-                                            : 'bg-champagne-200 accent-obsidian-900'
-                                    }`}
+                                    className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-black/10 dark:bg-white/10 accent-current"
+                                    style={{ accentColor: t.accentColorHex }}
                                 />
-                                <div className={`flex justify-between text-[11px] font-mono ${isDarkMode ? 'text-obsidian-400' : 'text-champagne-600'}`}>
+                                <div className={`flex justify-between text-[11px] font-mono ${t.textMuted}`}>
                                     <span>8</span>
                                     <span>24</span>
                                     <span>40</span>
@@ -604,45 +642,37 @@
                                 </div>
                             </div>
 
-                            <hr className={isDarkMode ? 'border-obsidian-800' : 'border-champagne-200'} />
+                            <hr className={t.divider} />
 
                             {/* Character Set Toggles */}
                             <div className="space-y-3">
-                                <label className={`text-xs font-semibold uppercase tracking-widest block ${isDarkMode ? 'text-champagne-400' : 'text-obsidian-500'}`}>
+                                <label className={`text-xs font-bold uppercase tracking-wider block ${t.textMuted}`}>
                                     Character Sets
                                 </label>
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                                     <label className={`flex items-center space-x-2.5 p-3.5 rounded-2xl border cursor-pointer transition-all ${
-                                        includeUpper 
-                                            ? isDarkMode ? 'bg-champagne-200 border-champagne-200 text-obsidian-950 font-semibold' : 'bg-obsidian-900 border-obsidian-900 text-champagne-100 font-semibold' 
-                                            : isDarkMode ? 'bg-obsidian-950/60 border-obsidian-800 text-champagne-500' : 'bg-white/60 border-champagne-300 text-obsidian-600'
+                                        includeUpper ? t.chipActive : t.chipInactive
                                     }`}>
-                                        <input type="checkbox" checked={includeUpper} onChange={(e) => setIncludeUpper(e.target.checked)} className="rounded border-current accent-obsidian-900 dark:accent-champagne-300"/>
-                                        <span className="text-xs">Uppercase (A-Z)</span>
+                                        <input type="checkbox" checked={includeUpper} onChange={(e) => setIncludeUpper(e.target.checked)} className="rounded border-current"/>
+                                        <span className="text-xs font-semibold">Uppercase</span>
                                     </label>
                                     <label className={`flex items-center space-x-2.5 p-3.5 rounded-2xl border cursor-pointer transition-all ${
-                                        includeLower 
-                                            ? isDarkMode ? 'bg-champagne-200 border-champagne-200 text-obsidian-950 font-semibold' : 'bg-obsidian-900 border-obsidian-900 text-champagne-100 font-semibold' 
-                                            : isDarkMode ? 'bg-obsidian-950/60 border-obsidian-800 text-champagne-500' : 'bg-white/60 border-champagne-300 text-obsidian-600'
+                                        includeLower ? t.chipActive : t.chipInactive
                                     }`}>
-                                        <input type="checkbox" checked={includeLower} onChange={(e) => setIncludeLower(e.target.checked)} className="rounded border-current accent-obsidian-900 dark:accent-champagne-300"/>
-                                        <span className="text-xs">Lowercase (a-z)</span>
+                                        <input type="checkbox" checked={includeLower} onChange={(e) => setIncludeLower(e.target.checked)} className="rounded border-current"/>
+                                        <span className="text-xs font-semibold">Lowercase</span>
                                     </label>
                                     <label className={`flex items-center space-x-2.5 p-3.5 rounded-2xl border cursor-pointer transition-all ${
-                                        includeNumbers 
-                                            ? isDarkMode ? 'bg-champagne-200 border-champagne-200 text-obsidian-950 font-semibold' : 'bg-obsidian-900 border-obsidian-900 text-champagne-100 font-semibold' 
-                                            : isDarkMode ? 'bg-obsidian-950/60 border-obsidian-800 text-champagne-500' : 'bg-white/60 border-champagne-300 text-obsidian-600'
+                                        includeNumbers ? t.chipActive : t.chipInactive
                                     }`}>
-                                        <input type="checkbox" checked={includeNumbers} onChange={(e) => setIncludeNumbers(e.target.checked)} className="rounded border-current accent-obsidian-900 dark:accent-champagne-300"/>
-                                        <span className="text-xs">Numbers (0-9)</span>
+                                        <input type="checkbox" checked={includeNumbers} onChange={(e) => setIncludeNumbers(e.target.checked)} className="rounded border-current"/>
+                                        <span className="text-xs font-semibold">Numbers</span>
                                     </label>
                                     <label className={`flex items-center space-x-2.5 p-3.5 rounded-2xl border cursor-pointer transition-all ${
-                                        includeSymbols 
-                                            ? isDarkMode ? 'bg-champagne-200 border-champagne-200 text-obsidian-950 font-semibold' : 'bg-obsidian-900 border-obsidian-900 text-champagne-100 font-semibold' 
-                                            : isDarkMode ? 'bg-obsidian-950/60 border-obsidian-800 text-champagne-500' : 'bg-white/60 border-champagne-300 text-obsidian-600'
+                                        includeSymbols ? t.chipActive : t.chipInactive
                                     }`}>
-                                        <input type="checkbox" checked={includeSymbols} onChange={(e) => setIncludeSymbols(e.target.checked)} className="rounded border-current accent-obsidian-900 dark:accent-champagne-300"/>
-                                        <span className="text-xs">Symbols (!@#)</span>
+                                        <input type="checkbox" checked={includeSymbols} onChange={(e) => setIncludeSymbols(e.target.checked)} className="rounded border-current"/>
+                                        <span className="text-xs font-semibold">Symbols</span>
                                     </label>
                                 </div>
                             </div>
@@ -650,19 +680,17 @@
                             {/* Ambiguous Chars Toggle */}
                             <div>
                                 <label className={`flex items-center space-x-2.5 p-3.5 rounded-2xl border cursor-pointer transition-all ${
-                                    excludeAmbiguous 
-                                        ? isDarkMode ? 'bg-champagne-200 border-champagne-200 text-obsidian-950' : 'bg-obsidian-900 border-obsidian-900 text-champagne-100' 
-                                        : isDarkMode ? 'bg-obsidian-950/60 border-obsidian-800 text-champagne-400' : 'bg-white/60 border-champagne-300 text-obsidian-600'
+                                    excludeAmbiguous ? t.chipActive : t.chipInactive
                                 }`}>
                                     <input 
                                         type="checkbox" 
                                         checked={excludeAmbiguous} 
                                         onChange={(e) => setExcludeAmbiguous(e.target.checked)} 
-                                        className="rounded border-current accent-obsidian-900 dark:accent-champagne-300"
+                                        className="rounded border-current"
                                     />
                                     <div className="text-xs">
-                                        <span className="font-semibold">Exclude Ambiguous Characters</span>
-                                        <span className={`block text-[11px] font-mono mt-0.5 ${isDarkMode && excludeAmbiguous ? 'text-obsidian-800' : isDarkMode ? 'text-champagne-500' : excludeAmbiguous ? 'text-champagne-200' : 'text-obsidian-500'}`}>
+                                        <span className="font-bold">Exclude Ambiguous Characters</span>
+                                        <span className={`block text-[11px] font-mono mt-0.5 opacity-80`}>
                                             Filters out visually confusing chars (0, O, o, 1, l, I, |, ;, :)
                                         </span>
                                     </div>
@@ -671,18 +699,14 @@
 
                             {/* Leading Char & Custom Symbols Row */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
-                                <div className={`border rounded-2xl p-4 space-y-2 ${isDarkMode ? 'bg-obsidian-950/70 border-obsidian-800' : 'bg-white/70 border-champagne-300/70'}`}>
-                                    <label className={`text-xs font-semibold uppercase tracking-wider block ${isDarkMode ? 'text-champagne-400' : 'text-obsidian-600'}`}>
+                                <div className={`border rounded-2xl p-4 space-y-2 ${t.subCardBg}`}>
+                                    <label className={`text-xs font-bold uppercase tracking-wider block ${t.textMuted}`}>
                                         Start With (Leading Character)
                                     </label>
                                     <select
                                         value={leadingChar}
                                         onChange={(e) => setLeadingChar(e.target.value)}
-                                        className={`w-full border rounded-xl px-3 py-2 text-xs font-medium focus:outline-none ${
-                                            isDarkMode 
-                                                ? 'bg-obsidian-900 border-obsidian-700 text-champagne-100' 
-                                                : 'bg-white border-champagne-300 text-obsidian-900'
-                                        }`}
+                                        className={`w-full border rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none ${t.inputBg}`}
                                     >
                                         <option value="any">Any (Random Start)</option>
                                         <option value="upper" disabled={!includeUpper}>Uppercase Letter (A-Z)</option>
@@ -692,19 +716,17 @@
                                     </select>
                                 </div>
 
-                                <div className={`border rounded-2xl p-4 space-y-2 ${isDarkMode ? 'bg-obsidian-950/70 border-obsidian-800' : 'bg-white/70 border-champagne-300/70'}`}>
+                                <div className={`border rounded-2xl p-4 space-y-2 ${t.subCardBg}`}>
                                     <div className="flex justify-between items-center">
-                                        <label className={`text-xs font-semibold uppercase tracking-wider ${isDarkMode ? 'text-champagne-400' : 'text-obsidian-600'}`}>
+                                        <label className={`text-xs font-bold uppercase tracking-wider ${t.textMuted}`}>
                                             Custom Allowed Symbols
                                         </label>
                                         <div className="flex space-x-1 text-[11px]">
                                             <button 
                                                 type="button"
                                                 onClick={() => setSymbolMode('default')} 
-                                                className={`px-2.5 py-0.5 rounded-full border transition-all ${
-                                                    symbolMode === 'default' 
-                                                        ? isDarkMode ? 'bg-champagne-200 text-obsidian-950 border-champagne-200 font-semibold' : 'bg-obsidian-900 text-champagne-100 border-obsidian-900 font-semibold' 
-                                                        : 'border-transparent text-champagne-600'
+                                                className={`px-2.5 py-0.5 rounded-full border transition-all text-xs font-bold ${
+                                                    symbolMode === 'default' ? t.chipActive : 'border-transparent opacity-60 hover:opacity-100'
                                                 }`}
                                             >
                                                 Default
@@ -712,10 +734,8 @@
                                             <button 
                                                 type="button"
                                                 onClick={() => setSymbolMode('custom')} 
-                                                className={`px-2.5 py-0.5 rounded-full border transition-all ${
-                                                    symbolMode === 'custom' 
-                                                        ? isDarkMode ? 'bg-champagne-200 text-obsidian-950 border-champagne-200 font-semibold' : 'bg-obsidian-900 text-champagne-100 border-obsidian-900 font-semibold' 
-                                                        : 'border-transparent text-champagne-600'
+                                                className={`px-2.5 py-0.5 rounded-full border transition-all text-xs font-bold ${
+                                                    symbolMode === 'custom' ? t.chipActive : 'border-transparent opacity-60 hover:opacity-100'
                                                 }`}
                                             >
                                                 Custom
@@ -730,19 +750,15 @@
                                                 onChange={(e) => setCustomSymbols(e.target.value)}
                                                 placeholder="Enter at least 3 symbols"
                                                 className={`w-full border rounded-xl px-3 py-2 text-xs font-mono focus:outline-none ${
-                                                    !isCustomSymbolsValid() 
-                                                        ? 'border-rose-500' 
-                                                        : isDarkMode ? 'bg-obsidian-900 border-obsidian-700 text-champagne-100' : 'bg-white border-champagne-300 text-obsidian-900'
+                                                    !isCustomSymbolsValid() ? 'border-rose-500' : t.inputBg
                                                 }`}
                                             />
                                             {!isCustomSymbolsValid() && (
-                                                <p className="text-[10px] text-rose-500 mt-1 font-medium">Require at least 3 custom symbols.</p>
+                                                <p className="text-[10px] text-rose-500 mt-1 font-semibold">Require at least 3 custom symbols.</p>
                                             )}
                                         </div>
                                     ) : (
-                                        <div className={`text-xs px-3 py-2 rounded-xl border font-mono truncate ${
-                                            isDarkMode ? 'bg-obsidian-900 border-obsidian-800 text-champagne-400' : 'bg-white border-champagne-200 text-obsidian-600'
-                                        }`}>
+                                        <div className={`text-xs px-3 py-2 rounded-xl border font-mono truncate ${t.inputBg}`}>
                                             {defaultSymbols}
                                         </div>
                                     )}
@@ -750,21 +766,15 @@
                             </div>
                         </div>
 
-                        {/* Local Staging Vault Card */}
+                        {/* Local Vault Card */}
                         {Array.isArray(savedPasswords) && savedPasswords.length > 0 && (
-                            <div className={`rounded-[32px] p-7 border space-y-3 transition-all ${
-                                isDarkMode 
-                                    ? 'bg-obsidian-900 border-obsidian-800/80 shadow-sculptural-dark' 
-                                    : 'bg-[#FAF6F0] border-champagne-300/80 shadow-sculptural-light'
-                            }`}>
+                            <div className={`rounded-3xl p-6 sm:p-7 border space-y-3 transition-all ${t.cardBg}`}>
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center space-x-2">
-                                        <h3 className={`font-luxury-serif text-xl font-bold tracking-wide ${isDarkMode ? 'text-champagne-100' : 'text-obsidian-900'}`}>
+                                        <h3 className="text-lg font-bold tracking-tight">
                                             Local Vault
                                         </h3>
-                                        <span className={`text-xs font-mono px-2.5 py-0.5 rounded-full border ${
-                                            isDarkMode ? 'bg-obsidian-800 border-obsidian-700 text-champagne-300' : 'bg-champagne-200 border-champagne-300 text-obsidian-700'
-                                        }`}>
+                                        <span className={`text-xs font-mono px-2.5 py-0.5 rounded-full border font-bold ${t.badgeBg} ${t.badgeBorder}`}>
                                             {savedPasswords.length} stored
                                         </span>
                                     </div>
@@ -772,18 +782,14 @@
                                         <button
                                             type="button"
                                             onClick={downloadListAsTxt}
-                                            className={`px-3.5 py-1.5 text-xs font-semibold rounded-full border transition-all flex items-center space-x-1.5 ${
-                                                isDarkMode 
-                                                    ? 'bg-obsidian-800 border-obsidian-700 text-champagne-200 hover:bg-obsidian-750' 
-                                                    : 'bg-white/80 border-champagne-300 text-obsidian-800 hover:bg-white'
-                                            }`}
+                                            className={`px-3.5 py-1.5 text-xs font-bold rounded-xl border transition-all flex items-center space-x-1.5 ${t.btnSecondary}`}
                                         >
                                             <span>Export .txt</span>
                                         </button>
                                         <button
                                             type="button"
                                             onClick={clearList}
-                                            className="px-3.5 py-1.5 text-xs font-semibold rounded-full border border-rose-500/30 text-rose-500 hover:bg-rose-500/10 transition-colors"
+                                            className="px-3.5 py-1.5 text-xs font-bold rounded-xl border border-rose-500/30 text-rose-500 hover:bg-rose-500/10 transition-colors"
                                         >
                                             Clear All
                                         </button>
@@ -791,20 +797,16 @@
                                 </div>
                                 <div className="max-h-56 overflow-y-auto space-y-2 pr-1 custom-scroll">
                                     {savedPasswords.map((item, index) => (
-                                        <div key={index} className={`border rounded-2xl px-4 py-2.5 flex items-center justify-between text-xs font-mono transition-all ${
-                                            isDarkMode ? 'bg-obsidian-950/80 border-obsidian-800/80 text-champagne-200' : 'bg-white/80 border-champagne-300/80 text-obsidian-900'
-                                        }`}>
+                                        <div key={index} className={`border rounded-2xl px-4 py-2.5 flex items-center justify-between text-xs font-mono transition-all ${t.inputBg}`}>
                                             <span className="truncate mr-4 select-all">{String(item || '')}</span>
                                             <div className="flex items-center space-x-2 shrink-0">
                                                 <button
                                                     type="button"
                                                     onClick={() => copyToClipboard(item, index)}
-                                                    className={`text-[11px] font-sans px-3 py-1 rounded-full border transition-all ${
+                                                    className={`text-[11px] font-sans px-3 py-1 rounded-xl border font-bold transition-all ${
                                                         copiedVaultIdx === index
                                                             ? 'bg-emerald-600 text-white border-transparent'
-                                                            : isDarkMode 
-                                                                ? 'border-obsidian-700 hover:bg-obsidian-800 text-champagne-300' 
-                                                                : 'border-champagne-300 hover:bg-champagne-200 text-obsidian-800'
+                                                            : t.btnSecondary
                                                     }`}
                                                 >
                                                     {copiedVaultIdx === index ? '✓ Copied' : 'Copy'}
@@ -812,7 +814,7 @@
                                                 <button
                                                     type="button"
                                                     onClick={() => removeSavedItem(index)}
-                                                    className="text-zinc-400 hover:text-rose-500 p-1 rounded-full transition-colors"
+                                                    className="opacity-50 hover:opacity-100 hover:text-rose-500 p-1 rounded-full transition-colors font-bold"
                                                     title="Delete password"
                                                 >
                                                     ✕
@@ -826,36 +828,32 @@
 
                         {/* Security Specifications Card */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className={`rounded-[28px] p-6 space-y-2 border ${
-                                isDarkMode ? 'bg-obsidian-900/60 border-obsidian-800' : 'bg-[#FAF6F0]/60 border-champagne-300/60'
-                            }`}>
-                                <h3 className={`font-luxury-serif text-base font-bold ${isDarkMode ? 'text-champagne-200' : 'text-obsidian-900'}`}>
-                                    Cryptographic Guarantee
+                            <div className={`rounded-3xl p-6 space-y-2 border ${t.subCardBg}`}>
+                                <h3 className="text-sm font-bold flex items-center space-x-1.5">
+                                    <span>🛡️</span>
+                                    <span>Cryptographic Guarantee</span>
                                 </h3>
-                                <p className={`text-xs leading-relaxed ${isDarkMode ? 'text-champagne-400' : 'text-obsidian-600'}`}>
-                                    Entropy is generated via the native browser Web Crypto API (<code className="text-[11px] font-mono px-1 rounded bg-black/5 dark:bg-white/5">crypto.getRandomValues</code>) with uniform Fisher-Yates array permutation.
+                                <p className={`text-xs leading-relaxed ${t.textMuted}`}>
+                                    Entropy is generated via the native browser Web Crypto API (<code className="text-[11px] font-mono px-1 rounded bg-black/10 dark:bg-white/10">crypto.getRandomValues</code>) with uniform Fisher-Yates array permutation.
                                 </p>
                             </div>
 
-                            <div className={`rounded-[28px] p-6 space-y-2 border ${
-                                isDarkMode ? 'bg-obsidian-900/60 border-obsidian-800' : 'bg-[#FAF6F0]/60 border-champagne-300/60'
-                            }`}>
-                                <h3 className={`font-luxury-serif text-base font-bold ${isDarkMode ? 'text-champagne-200' : 'text-obsidian-900'}`}>
-                                    Client-Side Privacy
+                            <div className={`rounded-3xl p-6 space-y-2 border ${t.subCardBg}`}>
+                                <h3 className="text-sm font-bold flex items-center space-x-1.5">
+                                    <span>🔒</span>
+                                    <span>Client-Side Privacy</span>
                                 </h3>
-                                <p className={`text-xs leading-relaxed ${isDarkMode ? 'text-champagne-400' : 'text-obsidian-600'}`}>
-                                    100% in-memory client operation. No network packets, telemetry, or generated credentials ever leave your browser.
+                                <p className={`text-xs leading-relaxed ${t.textMuted}`}>
+                                    100% in-memory client operation. No network packets, telemetry, or generated credentials ever leave your device.
                                 </p>
                             </div>
                         </div>
                     </main>
 
                     {/* Footer */}
-                    <footer className={`border-t py-6 text-center text-xs transition-colors ${
-                        isDarkMode ? 'border-obsidian-800 text-champagne-500' : 'border-champagne-300/60 text-obsidian-500'
-                    }`}>
-                        <p className="font-luxury-serif text-sm tracking-wide">
-                            YabadabaPW • Champagne Beige &amp; Obsidian Black
+                    <footer className={`border-t py-6 text-center text-xs transition-colors ${t.footerBorder}`}>
+                        <p className={`font-medium ${t.textMuted}`}>
+                            YabadabaPW • Active Palette: <span className="font-bold">{t.name}</span>
                         </p>
                     </footer>
                 </div>
