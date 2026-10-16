@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YabadabaPW - Secure Material Design 3 Password Generator</title>
+    <!-- Favicon inline SVG to prevent 404 errors -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔐</text></svg>">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Roboto for Material Design 3 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Roboto', 'sans-serif'],
+                        mono: ['"Roboto Mono"', 'monospace'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Roboto', sans-serif; }
+        /* Custom scrollbar for vault */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background-color: rgba(150, 150, 150, 0.3);
+            border-radius: 9999px;
+        }
+    </style>
+    <!-- React & ReactDOM Production CDNs -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel for JSX compilation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="h-full antialiased transition-colors duration-300">
+    <div id="root" class="h-full"></div>
+
+    <script type="text/babel">
+        function App() {
+            // Theme state with localStorage persistence and system preference fallback
+            const [isDarkMode, setIsDarkMode] = React.useState(() => {
+                try {
+                    const saved = localStorage.getItem('yabadabapw_dark');
+                    if (saved !== null) return saved === 'true';
+                    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                } catch (e) {
+                    return false;
+                }
+            });
+
+            // Sync dark mode class on HTML document root and persist preference
+            React.useEffect(() => {
+                try {
+                    if (isDarkMode) {
+                        document.documentElement.classList.add('dark');
+                        document.body.classList.add('bg-[#141218]');
+                        document.body.classList.remove('bg-[#FEF7FF]');
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                        document.body.classList.remove('bg-[#141218]');
+                        document.body.classList.add('bg-[#FEF7FF]');
+                    }
+                    localStorage.setItem('yabadabapw_dark', String(isDarkMode));
+                } catch (e) {
+                    console.error('Failed to sync theme', e);
+                }
+            }, [isDarkMode]);
+
+            const [password, setPassword] = React.useState('');
+            const [length, setLength] = React.useState(16);
+            const [includeUpper, setIncludeUpper] = React.useState(true);
+            const [includeLower, setIncludeLower] = React.useState(true);
+            const [includeNumbers, setIncludeNumbers] = React.useState(true);
+            const [includeSymbols, setIncludeSymbols] = React.useState(true);
+            const [excludeAmbiguous, setExcludeAmbiguous] = React.useState(false);
+
+            // Custom symbols options
+            const [symbolMode, setSymbolMode] = React.useState('default');
+            const [customSymbols, setCustomSymbols] = React.useState('#@$');
+
+            // Leading character option
+            const [leadingChar, setLeadingChar] = React.useState('any');
+
+            const [copied, setCopied] = React.useState(false);
+            const [copiedVaultIdx, setCopiedVaultIdx] = React.useState(null);
+            const [saveNotification, setSaveNotification] = React.useState(false);
+
+            // Persistent saved passwords vault in localStorage
+            const [savedPasswords, setSavedPasswords] = React.useState(() => {
+                try {
+                    const stored = localStorage.getItem('yabadabapw_saved');
+                    return stored ? JSON.parse(stored) : [];
+                } catch (e) {
+                    return [];
+                }
+            });
+
+            React.useEffect(() => {
+                try {
+                    localStorage.setItem('yabadabapw_saved', JSON.stringify(savedPasswords));
+                } catch (e) {
+                    console.error('Failed to save to localStorage', e);
+                }
+            }, [savedPasswords]);
+
+            // Character sets
+            const uppercaseBase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const lowercaseBase = 'abcdefghijklmnopqrstuvwxyz';
+            const numberBase = '0123456789';
+            const defaultSymbols = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+            const ambiguousChars = ['0', 'O', 'o', 'I', 'l', '1', '|', ';', ':'];
+
+            const filterAmbiguous = (str) => {
+                if (!excludeAmbiguous) return str;
+                return str.split('').filter(c => !ambiguousChars.includes(c)).join('');
+            };
+
+            const getActiveSymbols = () => {
+                if (symbolMode === 'custom') {
+                    return typeof customSymbols === 'string' ? customSymbols : '#@$';
+                }
+                return defaultSymbols;
+            };
+
+            const isCustomSymbolsValid = () => {
+                if (symbolMode === 'custom' && includeSymbols) {
+                    const s = typeof customSymbols === 'string' ? customSymbols : '';
+                    return s.length >= 3;
+                }
+                return true;
+            };
+
+            // Calculate entropy in bits and strength category
+            const getStrengthMetrics = () => {
+                if (!password || password.startsWith('Error')) {
+                    return { bits: 0, label: 'None', color: 'bg-zinc-400', textColor: 'text-zinc-400', width: '0%' };
+                }
+                let poolSize = 0;
+                if (includeUpper) poolSize += filterAmbiguous(uppercaseBase).length;
+                if (includeLower) poolSize += filterAmbiguous(lowercaseBase).length;
+                if (includeNumbers) poolSize += filterAmbiguous(numberBase).length;
+                if (includeSymbols && isCustomSymbolsValid()) poolSize += filterAmbiguous(getActiveSymbols()).length;
+
+                if (poolSize === 0) return { bits: 0, label: 'None', color: 'bg-zinc-400', textColor: 'text-zinc-400', width: '0%' };
+
+                const bits = Math.round(password.length * Math.log2(poolSize));
+                if (bits < 36) {
+                    return { bits, label: 'Weak', color: 'bg-rose-500', textColor: 'text-rose-500 dark:text-rose-400', width: '25%' };
+                } else if (bits < 60) {
+                    return { bits, label: 'Fair', color: 'bg-amber-500', textColor: 'text-amber-500 dark:text-amber-400', width: '50%' };
+                } else if (bits < 80) {
+                    return { bits, label: 'Strong', color: 'bg-emerald-500', textColor: 'text-emerald-500 dark:text-emerald-400', width: '75%' };
+                } else {
+                    return { bits, label: 'Very Strong', color: 'bg-[#6750A4] dark:bg-[#D0BCFF]', textColor: 'text-[#6750A4] dark:text-[#D0BCFF]', width: '100%' };
+                }
+            };
+
+            const generatePassword = React.useCallback(() => {
+                // Priority validation: Check custom symbols configuration first
+                if (symbolMode === 'custom' && includeSymbols && !isCustomSymbolsValid()) {
+                    setPassword('Error: Custom symbols must have 3+ characters!');
+                    return;
+                }
+
+                const activeSymbols = filterAmbiguous(getActiveSymbols());
+                const activeUpper = filterAmbiguous(uppercaseBase);
+                const activeLower = filterAmbiguous(lowercaseBase);
+                const activeNumbers = filterAmbiguous(numberBase);
+
+                let charPool = '';
+                let requiredCategories = [];
+
+                if (includeUpper && activeUpper.length > 0) {
+                    charPool += activeUpper;
+                    requiredCategories.push(activeUpper);
+                }
+                if (includeLower && activeLower.length > 0) {
+                    charPool += activeLower;
+                    requiredCategories.push(activeLower);
+                }
+                if (includeNumbers && activeNumbers.length > 0) {
+                    charPool += activeNumbers;
+                    requiredCategories.push(activeNumbers);
+                }
+                if (includeSymbols && isCustomSymbolsValid() && activeSymbols.length > 0) {
+                    charPool += activeSymbols;
+                    requiredCategories.push(activeSymbols);
+                }
+
+                if (charPool === '' || requiredCategories.length === 0) {
+                    setPassword('Error: Please select at least one character set!');
+                    return;
+                }
+
+                const effectiveLength = Math.max(length, requiredCategories.length);
+
+                let resultChars = [];
+                const randomValues = new Uint32Array(effectiveLength);
+                window.crypto.getRandomValues(randomValues);
+
+                // 1. Guarantee at least one character from each selected category
+                for (let idx = 0; idx < requiredCategories.length; idx++) {
+                    const category = requiredCategories[idx];
+                    const randomIndex = randomValues[idx] % category.length;
+                    resultChars.push(category[randomIndex]);
+                }
+
+                // 2. Fill remainder of password length randomly from the combined pool
+                for (let i = resultChars.length; i < effectiveLength; i++) {
+                    const randomIndex = randomValues[i] % charPool.length;
+                    resultChars.push(charPool[randomIndex]);
+                }
+
+                // 3. Cryptographically secure Fisher-Yates shuffle with fresh entropy
+                const shuffleEntropy = new Uint32Array(resultChars.length);
+                window.crypto.getRandomValues(shuffleEntropy);
+                for (let i = resultChars.length - 1; i > 0; i--) {
+                    const j = shuffleEntropy[i] % (i + 1);
+                    const temp = resultChars[i];
+                    resultChars[i] = resultChars[j];
+                    resultChars[j] = temp;
+                }
+
+                // 4. Enforce Leading Character preference if specified
+                if (leadingChar !== 'any') {
+                    let targetPool = '';
+                    if (leadingChar === 'upper' && includeUpper) targetPool = activeUpper;
+                    if (leadingChar === 'lower' && includeLower) targetPool = activeLower;
+                    if (leadingChar === 'number' && includeNumbers) targetPool = activeNumbers;
+                    if (leadingChar === 'symbol' && includeSymbols && isCustomSymbolsValid()) targetPool = activeSymbols;
+
+                    if (targetPool && targetPool.length > 0) {
+                        const matchIndex = resultChars.findIndex(c => targetPool.includes(c));
+                        if (matchIndex !== -1) {
+                            const temp = resultChars[0];
+                            resultChars[0] = resultChars[matchIndex];
+                            resultChars[matchIndex] = temp;
+                        } else {
+                            const leadRand = new Uint32Array(1);
+                            window.crypto.getRandomValues(leadRand);
+                            resultChars[0] = targetPool[leadRand[0] % targetPool.length];
+                        }
+                    }
+                }
+
+                const finalStr = resultChars.join('');
+                setPassword(finalStr);
+                setCopied(false);
+            }, [length, includeUpper, includeLower, includeNumbers, includeSymbols, excludeAmbiguous, symbolMode, customSymbols, leadingChar]);
+
+            // Auto-generate on configuration change
+            React.useEffect(() => {
+                generatePassword();
+            }, [generatePassword]);
+
+            // Reset leading character if its selected character set becomes disabled
+            React.useEffect(() => {
+                if (leadingChar === 'upper' && !includeUpper) setLeadingChar('any');
+                if (leadingChar === 'lower' && !includeLower) setLeadingChar('any');
+                if (leadingChar === 'number' && !includeNumbers) setLeadingChar('any');
+                if (leadingChar === 'symbol' && (!includeSymbols || !isCustomSymbolsValid())) setLeadingChar('any');
+            }, [includeUpper, includeLower, includeNumbers, includeSymbols, symbolMode, customSymbols, leadingChar]);
+
+            const copyToClipboard = (textToCopy, isVaultIdx = null) => {
+                const str = typeof textToCopy === 'string' ? textToCopy : String(textToCopy || '');
+                if (!str || str.startsWith('Error')) return;
+
+                const onSuccess = () => {
+                    if (isVaultIdx !== null) {
+                        setCopiedVaultIdx(isVaultIdx);
+                        setTimeout(() => setCopiedVaultIdx(null), 1500);
+                    } else {
+                        setCopied(true);
+                        setTimeout(() => setCopied(false), 2000);
+                    }
+                };
+
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(str).then(onSuccess).catch(() => fallbackCopy(str, onSuccess));
+                } else {
+                    fallbackCopy(str, onSuccess);
+                }
+            };
+
+            const fallbackCopy = (str, cb) => {
+                const textArea = document.createElement("textarea");
+                textArea.value = str;
+                textArea.style.position = "fixed";
+                textArea.style.opacity = "0";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    if (cb) cb();
+                } catch (err) {
+                    console.error('Fallback copy failed', err);
+                }
+                document.body.removeChild(textArea);
+            };
+
+            const saveToList = () => {
+                const pwdStr = typeof password === 'string' ? password : String(password || '');
+                if (!pwdStr || pwdStr.startsWith('Error')) return;
+                if (!savedPasswords.includes(pwdStr)) {
+                    setSavedPasswords([pwdStr, ...savedPasswords]);
+                    setSaveNotification(true);
+                    setTimeout(() => setSaveNotification(false), 2000);
+                }
+            };
+
+            const removeSavedItem = (indexToRemove) => {
+                setSavedPasswords(savedPasswords.filter((_, idx) => idx !== indexToRemove));
+            };
+
+            const clearList = () => {
+                if (window.confirm('Are you sure you want to clear all saved passwords?')) {
+                    setSavedPasswords([]);
+                }
+            };
+
+            const downloadListAsTxt = () => {
+                if (!Array.isArray(savedPasswords) || savedPasswords.length === 0) return;
+                const fileContent = `# YabadabaPW Vault Export\n# Exported on ${new Date().toLocaleString()}\n\n` + savedPasswords.join('\n');
+                const blob = new Blob([fileContent], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `yabadabapw-vault-${new Date().toISOString().slice(0, 10)}.txt`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            };
+
+            const strength = getStrengthMetrics();
+            const isError = !password || password.startsWith('Error');
+
+            return (
+                <div className={`${isDarkMode ? 'dark bg-[#141218] text-[#E6E1E5]' : 'bg-[#FEF7FF] text-[#1D1B20]'} min-h-full flex flex-col justify-between transition-colors duration-300`}>
+                    {/* Material 3 Top App Bar */}
+                    <header className={`border-b ${isDarkMode ? 'border-[#49454F] bg-[#211F26]/90' : 'border-[#CAC4D0] bg-[#FEF7FF]/90'} sticky top-0 z-20 backdrop-blur-md`}>
+                        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+                            <div className="flex items-center space-x-3">
+                                <div className={`w-10 h-10 rounded-2xl ${isDarkMode ? 'bg-[#D0BCFF] text-[#381E72]' : 'bg-[#6750A4] text-white'} flex items-center justify-center font-bold text-base shadow-sm`}>
+                                    YP
+                                </div>
+                                <div>
+                                    <h1 className="text-xl font-medium tracking-tight">YabadabaPW</h1>
+                                    <p className={`text-xs ${isDarkMode ? 'text-[#CAC4D0]' : 'text-[#49454F]'}`}>Material Design 3 Single Page Password Vault</p>
+                                </div>
+                            </div>
+
+                            {/* M3 Theme Toggle Button */}
+                            <button
+                                onClick={() => setIsDarkMode(!isDarkMode)}
+                                className={`px-4 py-2 rounded-full border text-sm font-medium transition-colors flex items-center space-x-2 ${
+                                    isDarkMode 
+                                    ? 'bg-[#4A4458] border-[#938F99] text-[#E8DEF8] hover:bg-[#524B61]' 
+                                    : 'bg-[#EADDFF] border-[#79747E] text-[#21005D] hover:bg-[#D0BCFF]'
+                                }`}
+                                aria-label="Toggle theme"
+                            >
+                                {isDarkMode ? (
+                                    <>
+                                        <svg className="w-4 h-4 text-[#D0BCFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                                        </svg>
+                                        <span className="text-xs font-medium">Light M3</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <svg className="w-4 h-4 text-[#21005D]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                                        </svg>
+                                        <span className="text-xs font-medium">Dark M3</span>
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    </header>
+
+                    {/* Main Content */}
+                    <main className="max-w-3xl mx-auto px-6 py-8 w-full flex-grow space-y-6">
+                        {/* Password Display Card (M3 Elevated Surface) */}
+                        <div className={`rounded-[28px] p-6 shadow-md relative overflow-hidden transition-colors border ${isDarkMode ? 'bg-[#211F26] border-[#49454F]' : 'bg-[#F7F2FA] border-[#E7E0EC]'}`}>
+                            <div className="flex justify-between items-center mb-2">
+                                <label className={`block text-xs font-medium uppercase tracking-wider ${isDarkMode ? 'text-[#CAC4D0]' : 'text-[#49454F]'}`}>
+                                    Generated Password
+                                </label>
+                                {!isError && (
+                                    <div className="flex items-center space-x-2 text-xs">
+                                        <span className={`font-medium ${strength.textColor}`}>{strength.label}</span>
+                                        <span className={`font-mono text-[11px] ${isDarkMode ? 'text-[#938F99]' : 'text-[#79747E]'}`}>({strength.bits} bits)</span>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Password Box & Actions */}
+                            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                                <div 
+                                    className={`rounded-2xl px-5 py-4 font-mono text-lg sm:text-xl tracking-wide break-all flex-grow select-all border transition-colors ${
+                                        isError
+                                            ? 'border-rose-500/50 text-rose-500 bg-rose-500/10'
+                                            : isDarkMode 
+                                                ? 'bg-[#141218] border-[#49454F] text-[#E6E1E5]' 
+                                                : 'bg-[#FFFFFF] border-[#79747E] text-[#1D1B20]'
+                                    }`}
+                                >
+                                    {String(password || '')}
+                                </div>
+                                <div className="flex gap-2 shrink-0">
+                                    <button
+                                        onClick={() => copyToClipboard(password)}
+                                        disabled={isError}
+                                        className={`px-5 py-3.5 font-medium text-sm rounded-full transition-all flex items-center justify-center space-x-2 shadow-sm ${
+                                            isError
+                                                ? 'opacity-40 cursor-not-allowed bg-zinc-300 dark:bg-zinc-700 text-zinc-500'
+                                                : copied 
+                                                    ? 'bg-[#064E3B] text-[#ECFDF5]' 
+                                                    : isDarkMode 
+                                                        ? 'bg-[#D0BCFF] hover:bg-[#EADDFF] text-[#381E72]' 
+                                                        : 'bg-[#6750A4] hover:bg-[#7965AF] text-white'
+                                        }`}
+                                    >
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            {copied ? (
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
+                                            ) : (
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+                                            )}
+                                        </svg>
+                                        <span>{copied ? 'Copied' : 'Copy'}</span>
+                                    </button>
+
+                                    <button
+                                        onClick={saveToList}
+                                        disabled={isError}
+                                        className={`px-4 py-3.5 font-medium text-sm rounded-full transition-all flex items-center justify-center border shadow-sm ${
+                                            isError
+                                                ? 'opacity-40 cursor-not-allowed border-zinc-300 dark:border-zinc-700'
+                                                : isDarkMode 
+                                                    ? 'bg-[#2B2930] hover:bg-[#36343B] border-[#49454F] text-[#E8DEF8]' 
+                                                    : 'bg-[#FFFFFF] hover:bg-[#F3EDF7] border-[#79747E] text-[#6750A4]'
+                                        }`}
+                                        title="Save password to vault"
+                                    >
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"/>
+                                        </svg>
+                                        <span className="hidden sm:inline ml-1">Save</span>
+                                    </button>
+
+                                    <button
+                                        onClick={generatePassword}
+                                        className={`p-3.5 font-medium text-sm rounded-full transition-all flex items-center justify-center border shadow-sm active:rotate-180 duration-300 ${
+                                            isDarkMode 
+                                            ? 'bg-[#2B2930] hover:bg-[#36343B] border-[#49454F] text-[#E8DEF8]' 
+                                            : 'bg-[#FFFFFF] hover:bg-[#F3EDF7] border-[#79747E] text-[#6750A4]'
+                                        }`}
+                                        title="Generate new password"
+                                    >
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Password Entropy / Strength Bar */}
+                            {!isError && (
+                                <div className="mt-4 space-y-1.5">
+                                    <div className="w-full h-1.5 bg-zinc-200 dark:bg-zinc-700 rounded-full overflow-hidden">
+                                        <div 
+                                            className={`h-full ${strength.color} transition-all duration-300 rounded-full`}
+                                            style={{ width: strength.width }}
+                                        />
+                                    </div>
+                                </div>
+                            )}
+
+                            {saveNotification && (
+                                <p className="text-xs font-medium mt-3 text-emerald-500 dark:text-emerald-400 flex items-center space-x-1">
+                                    <span>✓</span>
+                                    <span>Added to your persistent password vault below.</span>
+                                </p>
+                            )}
+                        </div>
+
+                        {/* Configuration Dashboard (M3 Surface Card) */}
+                        <div className={`rounded-[28px] p-6 shadow-sm space-y-6 border ${isDarkMode ? 'bg-[#211F26] border-[#49454F]' : 'bg-[#F7F2FA] border-[#E7E0EC]'}`}>
+                            {/* Length Slider & Quick Presets */}
+                            <div className="space-y-3">
+                                <div className="flex justify-between items-center text-sm font-medium">
+                                    <span>Password Length</span>
+                                    <div className="flex items-center space-x-2">
+                                        <div className="flex space-x-1">
+                                            {[12, 16, 24, 32].map((preset) => (
+                                                <button
+                                                    key={preset}
+                                                    type="button"
+                                                    onClick={() => setLength(preset)}
+                                                    className={`px-2 py-0.5 rounded-lg text-[11px] font-mono border transition-colors ${
+                                                        length === preset
+                                                            ? isDarkMode ? 'bg-[#D0BCFF] text-[#381E72] border-[#D0BCFF]' : 'bg-[#6750A4] text-white border-[#6750A4]'
+                                                            : isDarkMode ? 'border-[#49454F] text-[#CAC4D0] hover:bg-[#36343B]' : 'border-[#CAC4D0] text-[#49454F] hover:bg-[#EADDFF]'
+                                                    }`}
+                                                >
+                                                    {preset}
+                                                </button>
+                                            ))}
+                                        </div>
+                                        <span className={`font-mono px-3 py-1 rounded-full border text-xs font-semibold ${isDarkMode ? 'bg-[#141218] border-[#49454F] text-[#D0BCFF]' : 'bg-[#FFFFFF] border-[#79747E] text-[#6750A4]'}`}>
+                                            {String(length)} Chars
+                                        </span>
+                                    </div>
+                                </div>
+                                <input
+                                    type="range"
+                                    min="8"
+                                    max="64"
+                                    value={length}
+                                    onChange={(e) => setLength(parseInt(e.target.value, 10))}
+                                    className="w-full h-2 rounded-lg appearance-none cursor-pointer accent-[#6750A4] dark:accent-[#D0BCFF] bg-[#CAC4D0] dark:bg-[#49454F]"
+                                />
+                                <div className={`flex justify-between text-[11px] font-mono ${isDarkMode ? 'text-[#938F99]' : 'text-[#79747E]'}`}>
+                                    <span>8</span>
+                                    <span>24</span>
+                                    <span>40</span>
+                                    <span>64</span>
+                                </div>
+                            </div>
+
+                            <hr className={isDarkMode ? 'border-[#49454F]' : 'border-[#CAC4D0]'} />
+
+                            {/* Character Type Toggles */}
+                            <div className="space-y-3">
+                                <label className="text-sm font-medium block">Character Sets</label>
+                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                    <label className={`flex items-center space-x-2.5 p-3.5 rounded-2xl border cursor-pointer transition-colors ${
+                                        includeUpper 
+                                            ? isDarkMode ? 'bg-[#4A4458] border-[#D0BCFF] text-[#E8DEF8]' : 'bg-[#EADDFF] border-[#6750A4] text-[#21005D]' 
+                                            : isDarkMode ? 'bg-[#211F26] border-[#49454F] text-[#938F99]' : 'bg-[#FFFFFF] border-[#CAC4D0] text-[#49454F]'
+                                    }`}>
+                                        <input type="checkbox" checked={includeUpper} onChange={(e) => setIncludeUpper(e.target.checked)} className="rounded border-current text-[#6750A4]"/>
+                                        <span className="text-xs font-medium">Uppercase (A-Z)</span>
+                                    </label>
+                                    <label className={`flex items-center space-x-2.5 p-3.5 rounded-2xl border cursor-pointer transition-colors ${
+                                        includeLower 
+                                            ? isDarkMode ? 'bg-[#4A4458] border-[#D0BCFF] text-[#E8DEF8]' : 'bg-[#EADDFF] border-[#6750A4] text-[#21005D]' 
+                                            : isDarkMode ? 'bg-[#211F26] border-[#49454F] text-[#938F99]' : 'bg-[#FFFFFF] border-[#CAC4D0] text-[#49454F]'
+                                    }`}>
+                                        <input type="checkbox" checked={includeLower} onChange={(e) => setIncludeLower(e.target.checked)} className="rounded border-current text-[#6750A4]"/>
+                                        <span className="text-xs font-medium">Lowercase (a-z)</span>
+                                    </label>
+                                    <label className={`flex items-center space-x-2.5 p-3.5 rounded-2xl border cursor-pointer transition-colors ${
+                                        includeNumbers 
+                                            ? isDarkMode ? 'bg-[#4A4458] border-[#D0BCFF] text-[#E8DEF8]' : 'bg-[#EADDFF] border-[#6750A4] text-[#21005D]' 
+                                            : isDarkMode ? 'bg-[#211F26] border-[#49454F] text-[#938F99]' : 'bg-[#FFFFFF] border-[#CAC4D0] text-[#49454F]'
+                                    }`}>
+                                        <input type="checkbox" checked={includeNumbers} onChange={(e) => setIncludeNumbers(e.target.checked)} className="rounded border-current text-[#6750A4]"/>
+                                        <span className="text-xs font-medium">Numbers (0-9)</span>
+                                    </label>
+                                    <label className={`flex items-center space-x-2.5 p-3.5 rounded-2xl border cursor-pointer transition-colors ${
+                                        includeSymbols 
+                                            ? isDarkMode ? 'bg-[#4A4458] border-[#D0BCFF] text-[#E8DEF8]' : 'bg-[#EADDFF] border-[#6750A4] text-[#21005D]' 
+                                            : isDarkMode ? 'bg-[#211F26] border-[#49454F] text-[#938F99]' : 'bg-[#FFFFFF] border-[#CAC4D0] text-[#49454F]'
+                                    }`}>
+                                        <input type="checkbox" checked={includeSymbols} onChange={(e) => setIncludeSymbols(e.target.checked)} className="rounded border-current text-[#6750A4]"/>
+                                        <span className="text-xs font-medium">Symbols (!@#)</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            {/* Additional Security Rules */}
+                            <div className="pt-1">
+                                <label className={`flex items-center space-x-2.5 p-3.5 rounded-2xl border cursor-pointer transition-colors ${
+                                    excludeAmbiguous 
+                                        ? isDarkMode ? 'bg-[#4A4458] border-[#D0BCFF] text-[#E8DEF8]' : 'bg-[#EADDFF] border-[#6750A4] text-[#21005D]' 
+                                        : isDarkMode ? 'bg-[#211F26] border-[#49454F] text-[#938F99]' : 'bg-[#FFFFFF] border-[#CAC4D0] text-[#49454F]'
+                                }`}>
+                                    <input 
+                                        type="checkbox" 
+                                        checked={excludeAmbiguous} 
+                                        onChange={(e) => setExcludeAmbiguous(e.target.checked)} 
+                                        className="rounded border-current text-[#6750A4]"
+                                    />
+                                    <div className="text-xs">
+                                        <span className="font-medium">Exclude Ambiguous Characters</span>
+                                        <span className={`block text-[11px] font-mono mt-0.5 ${isDarkMode ? 'text-[#CAC4D0]' : 'text-[#49454F]'}`}>
+                                            Filters out visually confusing chars (0, O, o, 1, l, I, |, ;, :)
+                                        </span>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                                {/* Leading Character */}
+                                <div className="space-y-2">
+                                    <label className="text-xs font-medium block">Start With (Leading Character)</label>
+                                    <select
+                                        value={leadingChar}
+                                        onChange={(e) => setLeadingChar(e.target.value)}
+                                        className={`w-full border rounded-2xl px-4 py-2.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#6750A4] ${
+                                            isDarkMode ? 'bg-[#141218] border-[#49454F] text-[#E6E1E5]' : 'bg-[#FFFFFF] border-[#79747E] text-[#1D1B20]'
+                                        }`}
+                                    >
+                                        <option value="any">Any (Random Start)</option>
+                                        <option value="upper" disabled={!includeUpper}>Uppercase Letter</option>
+                                        <option value="lower" disabled={!includeLower}>Lowercase Letter</option>
+                                        <option value="number" disabled={!includeNumbers}>Number</option>
+                                        <option value="symbol" disabled={!includeSymbols || !isCustomSymbolsValid()}>Symbol</option>
+                                    </select>
+                                </div>
+
+                                {/* Symbol Customization */}
+                                {includeSymbols && (
+                                    <div className="space-y-2">
+                                        <div className="flex justify-between items-center">
+                                            <label className="text-xs font-medium">Symbol Style</label>
+                                            <div className="flex space-x-1 text-[11px]">
+                                                <button 
+                                                    type="button"
+                                                    onClick={() => setSymbolMode('default')} 
+                                                    className={`px-2.5 py-1 rounded-full border transition-colors ${
+                                                        symbolMode === 'default' 
+                                                            ? isDarkMode ? 'bg-[#4A4458] border-[#D0BCFF] text-white' : 'bg-[#EADDFF] border-[#6750A4] text-[#21005D]' 
+                                                            : 'border-transparent text-[#79747E]'
+                                                    }`}
+                                                >
+                                                    Default
+                                                </button>
+                                                <button 
+                                                    type="button"
+                                                    onClick={() => setSymbolMode('custom')} 
+                                                    className={`px-2.5 py-1 rounded-full border transition-colors ${
+                                                        symbolMode === 'custom' 
+                                                            ? isDarkMode ? 'bg-[#4A4458] border-[#D0BCFF] text-white' : 'bg-[#EADDFF] border-[#6750A4] text-[#21005D]' 
+                                                            : 'border-transparent text-[#79747E]'
+                                                    }`}
+                                                >
+                                                    Custom
+                                                </button>
+                                            </div>
+                                        </div>
+                                        {symbolMode === 'custom' ? (
+                                            <div>
+                                                <input
+                                                    type="text"
+                                                    value={customSymbols}
+                                                    onChange={(e) => setCustomSymbols(e.target.value)}
+                                                    placeholder="Enter at least 3 symbols"
+                                                    className={`w-full border rounded-2xl px-4 py-2 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-[#6750A4] ${
+                                                        !isCustomSymbolsValid() ? 'border-rose-500' : isDarkMode ? 'bg-[#141218] border-[#49454F] text-[#E6E1E5]' : 'bg-[#FFFFFF] border-[#79747E] text-[#1D1B20]'
+                                                    }`}
+                                                />
+                                                {!isCustomSymbolsValid() && (
+                                                    <p className="text-[10px] text-rose-500 mt-1 font-medium">Require at least 3 custom symbols.</p>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <div className={`text-xs px-4 py-2.5 rounded-2xl border font-mono truncate ${isDarkMode ? 'bg-[#141218] border-[#49454F] text-[#938F99]' : 'bg-[#FFFFFF] border-[#79747E] text-[#79747E]'}`}>
+                                                {defaultSymbols}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Saved Passwords Vault List */}
+                        {Array.isArray(savedPasswords) && savedPasswords.length > 0 && (
+                            <div className={`rounded-[28px] p-6 space-y-3 shadow-sm border ${isDarkMode ? 'bg-[#211F26] border-[#49454F]' : 'bg-[#F7F2FA] border-[#E7E0EC]'}`}>
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <h2 className="text-sm font-semibold flex items-center space-x-1.5">
+                                            <span>Vault Storage</span>
+                                            <span className={`text-[11px] font-mono font-normal px-2 py-0.5 rounded-full border ${isDarkMode ? 'border-[#49454F] text-[#D0BCFF]' : 'border-[#CAC4D0] text-[#6750A4]'}`}>
+                                                {savedPasswords.length}
+                                            </span>
+                                        </h2>
+                                        <p className={`text-xs ${isDarkMode ? 'text-[#CAC4D0]' : 'text-[#49454F]'}`}>Persisted in local browser storage.</p>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <button
+                                            type="button"
+                                            onClick={downloadListAsTxt}
+                                            className={`px-4 py-2 text-xs font-medium rounded-full border transition-colors flex items-center space-x-1.5 ${
+                                                isDarkMode ? 'bg-[#4A4458] border-[#938F99] text-[#E8DEF8] hover:bg-[#524B61]' : 'bg-[#6750A4] border-transparent text-white hover:bg-[#7965AF]'
+                                            }`}
+                                        >
+                                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                            </svg>
+                                            <span>Export .txt</span>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={clearList}
+                                            className="px-4 py-2 text-xs font-medium rounded-full border border-rose-500/30 text-rose-500 hover:bg-rose-500/10 transition-colors"
+                                        >
+                                            Clear All
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className="max-h-56 overflow-y-auto space-y-2 pr-1 custom-scroll">
+                                    {savedPasswords.map((item, index) => (
+                                        <div key={index} className={`border rounded-2xl px-4 py-2.5 flex items-center justify-between text-xs font-mono group transition-colors ${
+                                            isDarkMode ? 'bg-[#141218] border-[#49454F] text-[#E6E1E5]' : 'bg-[#FFFFFF] border-[#79747E] text-[#1D1B20]'
+                                        }`}>
+                                            <span className="truncate mr-4 select-all">{String(item || '')}</span>
+                                            <div className="flex items-center space-x-2 shrink-0">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => copyToClipboard(item, index)}
+                                                    className={`text-[11px] px-3 py-1 rounded-full border font-medium transition-colors ${
+                                                        copiedVaultIdx === index
+                                                            ? 'bg-emerald-600 text-white border-transparent'
+                                                            : isDarkMode 
+                                                                ? 'bg-[#2B2930] border-[#49454F] text-[#D0BCFF] hover:bg-[#36343B]' 
+                                                                : 'bg-[#F7F2FA] border-[#79747E] text-[#6750A4] hover:bg-[#EADDFF]'
+                                                    }`}
+                                                >
+                                                    {copiedVaultIdx === index ? '✓ Copied' : 'Copy'}
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeSavedItem(index)}
+                                                    className="text-zinc-400 hover:text-rose-500 p-1 rounded-full transition-colors"
+                                                    title="Delete password"
+                                                >
+                                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"/>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Educational / Security Cards */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className={`rounded-[28px] p-6 space-y-2 border ${isDarkMode ? 'bg-[#211F26] border-[#49454F]' : 'bg-[#F7F2FA] border-[#E7E0EC]'}`}>
+                                <h3 className="text-sm font-semibold flex items-center space-x-1.5">
+                                    <svg className="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                                    </svg>
+                                    <span>Security Best Practices</span>
+                                </h3>
+                                <ul className={`text-xs space-y-1.5 ${isDarkMode ? 'text-[#CAC4D0]' : 'text-[#49454F]'}`}>
+                                    <li>• Use 16+ characters combining diverse character sets.</li>
+                                    <li>• Never reuse the same credential across multiple sites.</li>
+                                    <li>• Store confidential keys inside a trusted password manager.</li>
+                                </ul>
+                                <div className="pt-2">
+                                    <a
+                                        href="https://passwords.google.com/"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={`inline-flex items-center space-x-1 text-xs font-medium underline underline-offset-4 ${isDarkMode ? 'text-[#D0BCFF] hover:text-white' : 'text-[#6750A4] hover:text-[#21005D]'}`}
+                                    >
+                                        <span>Open Google Password Manager</span>
+                                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div className={`rounded-[28px] p-6 space-y-2 border ${isDarkMode ? 'bg-[#211F26] border-[#49454F]' : 'bg-[#F7F2FA] border-[#E7E0EC]'}`}>
+                                <h3 className="text-sm font-semibold flex items-center space-x-1.5">
+                                    <svg className="w-4 h-4 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                                    </svg>
+                                    <span>Client-Side Privacy</span>
+                                </h3>
+                                <p className={`text-xs leading-relaxed ${isDarkMode ? 'text-[#CAC4D0]' : 'text-[#49454F]'}`}>
+                                    Generation relies entirely on browser cryptographic entropy (<code className="text-[11px] font-mono px-1.5 py-0.5 rounded border border-zinc-300 dark:border-zinc-700">crypto.getRandomValues</code>). No passwords or private tokens are transmitted over networks or logged on servers.
+                                </p>
+                            </div>
+                        </div>
+                    </main>
+
+                    {/* Footer */}
+                    <footer className={`border-t py-6 text-center text-xs ${isDarkMode ? 'border-[#49454F] text-[#938F99] bg-[#211F26]' : 'border-[#CAC4D0] text-[#79747E] bg-[#F7F2FA]'}`}>
+                        <p>YabadabaPW • Material Design 3 Single Page Application</p>
+                    </footer>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
