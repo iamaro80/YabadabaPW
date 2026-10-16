@@ -134,6 +134,35 @@
                 footerBorder: 'border-[#334465]/60',
                 tabActive: 'bg-[#335495] text-white border-[#668BC4]/40 font-bold',
                 tabInactive: 'text-[#A5BECF] hover:text-white',
+            },
+            lime: {
+                id: 'lime',
+                name: 'Cyber Lime & Slate Navy',
+                tag: 'Cyber Lime',
+                emoji: '🌱',
+                isDark: false,
+                bodyBg: 'bg-[#FCFEF9]',
+                bodyBgHex: '#FCFEF9',
+                headerBg: 'bg-[#FFFFFF]/90 border-[#ADD96A]',
+                cardBg: 'bg-[#FFFFFF] border-[#ADD96A] shadow-[0_10px_30px_rgba(130,204,0,0.12)]',
+                textPrimary: 'text-[#283B51]',
+                textMuted: 'text-[#81A76A]',
+                inputBg: 'bg-[#FCFEF9] border-[#C8CED1] text-[#283B51]',
+                btnPrimary: 'bg-[#82CC00] hover:bg-[#74B800] text-[#283B51] font-bold',
+                btnSecondary: 'bg-[#EAF5D2] hover:bg-[#DDF0C0] border-[#ADD96A] text-[#283B51]',
+                accentText: 'text-[#82CC00]',
+                badgeBorder: 'border-[#81A76A]',
+                badgeBg: 'bg-[#EAF5D2] text-[#283B51]',
+                chipActive: 'bg-[#82CC00] text-[#283B51] border-[#82CC00] font-bold',
+                chipInactive: 'bg-[#FCFEF9] text-[#283B51] border-[#C8CED1] hover:bg-[#EAF5D2]',
+                gaugeTrack: 'bg-[#EAF5D2]',
+                gaugeBar: 'bg-[#82CC00]',
+                accentColorHex: '#82CC00',
+                subCardBg: 'bg-[#FCFEF9]/80 border-[#C8CED1]',
+                divider: 'border-[#C8CED1]/60',
+                footerBorder: 'border-[#ADD96A]/60',
+                tabActive: 'bg-[#82CC00] text-[#283B51] border-[#82CC00] font-bold',
+                tabInactive: 'text-[#81A76A] hover:text-[#283B51]',
             }
         };
 
@@ -460,11 +489,11 @@
                                 </div>
                             </div>
 
-                            {/* 3-Palette Switcher Buttons */}
-                            <div className="flex items-center space-x-1.5 p-1 rounded-2xl border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5">
+                            {/* 4-Palette Switcher Buttons */}
+                            <div className="flex flex-wrap items-center justify-center gap-1 p-1 rounded-2xl border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5">
                                 <button
                                     onClick={() => setThemeKey('nordic')}
-                                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1 border ${
+                                    className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1 border ${
                                         themeKey === 'nordic' ? PALETTES.nordic.tabActive : PALETTES.nordic.tabInactive + ' border-transparent'
                                     }`}
                                     title="Palette 1: Nordic Periwinkle (Light Mode)"
@@ -474,7 +503,7 @@
                                 </button>
                                 <button
                                     onClick={() => setThemeKey('sunset')}
-                                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1 border ${
+                                    className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1 border ${
                                         themeKey === 'sunset' ? PALETTES.sunset.tabActive : PALETTES.sunset.tabInactive + ' border-transparent'
                                     }`}
                                     title="Palette 2: Sunset Coral & Plum (Dark Mode)"
@@ -484,13 +513,23 @@
                                 </button>
                                 <button
                                     onClick={() => setThemeKey('navy')}
-                                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1 border ${
+                                    className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1 border ${
                                         themeKey === 'navy' ? PALETTES.navy.tabActive : PALETTES.navy.tabInactive + ' border-transparent'
                                     }`}
                                     title="Palette 6: Deep Navy & Sage (Dark Mode)"
                                 >
                                     <span>⚓️</span>
-                                    <span>Navy Sage</span>
+                                    <span>Navy</span>
+                                </button>
+                                <button
+                                    onClick={() => setThemeKey('lime')}
+                                    className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1 border ${
+                                        themeKey === 'lime' ? PALETTES.lime.tabActive : PALETTES.lime.tabInactive + ' border-transparent'
+                                    }`}
+                                    title="Cyber Lime & Slate Navy"
+                                >
+                                    <span>🌱</span>
+                                    <span>Lime</span>
                                 </button>
                             </div>
                         </div>

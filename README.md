@@ -8,9 +8,9 @@
 
 ---
 
-## 🎨 Three Handcrafted Themes (Palettes 1, 2, and 6)
+## 🎨 Four Handcrafted Themes
 
-YabadabaPW includes a live header palette switcher supporting three distinct aesthetic profiles:
+YabadabaPW includes a live header palette switcher supporting four distinct aesthetic profiles:
 
 1. **❄️ Nordic Periwinkle (Palette 1)**:
    - Light-mode clean Scandinavian SaaS security aesthetic.
@@ -21,6 +21,9 @@ YabadabaPW includes a live header palette switcher supporting three distinct aes
 3. **⚓️ Deep Navy & Sage Olive (Palette 6)**:
    - Executive defense dark mode combining oceanic depth with organic sage.
    - Canvas: `#040A1B` • Navy: `#335495` • Accents: `#91A471`, `#668BC4` & `#A5BECF`
+4. **🌱 Cyber Lime & Slate Navy**:
+   - High-voltage modern organic tech aesthetic.
+   - Primary: `#82CC00` • Text & Headers: `#283B51` • Canvas: `#FCFEF9` • Cards: `#EAF5D2` • Accents: `#ADD96A` & `#81A76A`
 
 ---
 
