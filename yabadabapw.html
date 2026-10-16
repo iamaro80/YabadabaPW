@@ -329,7 +329,7 @@
 
             const downloadListAsTxt = () => {
                 if (!Array.isArray(savedPasswords) || savedPasswords.length === 0) return;
-                const fileContent = `# YabadabaPW Vault Export\n# Theme: Palette #566 (Colorion)\n# Exported on ${new Date().toLocaleString()}\n\n` + savedPasswords.join('\n');
+                const fileContent = `# YabadabaPW Vault Export\n# Exported on ${new Date().toLocaleString()}\n\n` + savedPasswords.join('\n');
                 const blob = new Blob([fileContent], { type: 'text/plain;charset=utf-8' });
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
@@ -392,30 +392,15 @@
                                     YP
                                 </div>
                                 <div>
-                                    <div className="flex items-center space-x-2">
-                                        <h1 className="text-xl font-bold tracking-tight text-[#363671]">
-                                            YabadabaPW
-                                        </h1>
-                                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#8FC9BF]/20 text-[#363671] border border-[#8FC9BF]/50">
-                                            Palette #566
-                                        </span>
-                                    </div>
+                                    <h1 className="text-xl font-bold tracking-tight text-[#363671]">
+                                        YabadabaPW
+                                    </h1>
                                     <p className="text-[11px] font-medium text-[#807E9B]">
                                         Custom Rule-Compliant Strong Password Generator
                                     </p>
                                 </div>
                             </div>
 
-                            {/* Palette Swatches Bar */}
-                            <div className="flex items-center space-x-1.5 p-1.5 rounded-2xl bg-[#F8F9FD] border border-[#807E9B]/20 shadow-sm" title="Palette #566: #FFFFFF, #363671, #3E5196, #EE537C, #EB927B, #8FC9BF, #807E9B">
-                                <span className="w-3.5 h-3.5 rounded-full border border-black/15 shadow-sm" style={{ background: '#FFFFFF' }} title="#FFFFFF"></span>
-                                <span className="w-3.5 h-3.5 rounded-full shadow-sm" style={{ background: '#363671' }} title="#363671"></span>
-                                <span className="w-3.5 h-3.5 rounded-full shadow-sm" style={{ background: '#3E5196' }} title="#3E5196"></span>
-                                <span className="w-3.5 h-3.5 rounded-full shadow-sm" style={{ background: '#EE537C' }} title="#EE537C"></span>
-                                <span className="w-3.5 h-3.5 rounded-full shadow-sm" style={{ background: '#EB927B' }} title="#EB927B"></span>
-                                <span className="w-3.5 h-3.5 rounded-full shadow-sm" style={{ background: '#8FC9BF' }} title="#8FC9BF"></span>
-                                <span className="w-3.5 h-3.5 rounded-full shadow-sm" style={{ background: '#807E9B' }} title="#807E9B"></span>
-                            </div>
                         </div>
                     </header>
 
@@ -836,7 +821,7 @@
                     {/* Footer */}
                     <footer className="border-t border-[#807E9B]/20 py-6 text-center text-xs bg-white/60">
                         <p className="font-medium text-[#807E9B]">
-                            YabadabaPW • Single Dedicated Theme (Colorion Palette #566) • 100% Client-Side Cryptographic Security
+                            YabadabaPW • 100% Client-Side Cryptographic Security
                         </p>
                     </footer>
                 </div>
