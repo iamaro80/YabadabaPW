@@ -13,28 +13,55 @@
     <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
     
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
                         sans: ['"Plus Jakarta Sans"', 'sans-serif'],
                         mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    colors: {
+                        cwhite: '#FFFFFF',
+                        cindigo: '#363671',
+                        ccobalt: '#3E5196',
+                        crose: '#EE537C',
+                        ccoral: '#EB927B',
+                        cmint: '#8FC9BF',
+                        cslate: '#807E9B',
+                        cbg: '#F8F9FD',
                     }
                 }
             }
         }
     </script>
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        :root {
+            --bg-page: #F8F9FD;
+            --card-bg: #FFFFFF;
+            --text-main: #363671;
+            --text-sub: #807E9B;
+            --accent-rose: #EE537C;
+            --accent-coral: #EB927B;
+            --accent-mint: #8FC9BF;
+            --accent-cobalt: #3E5196;
+            --border-card: rgba(128, 126, 155, 0.22);
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+        }
         .custom-scroll::-webkit-scrollbar { width: 6px; }
         .custom-scroll::-webkit-scrollbar-track { background: transparent; }
         .custom-scroll::-webkit-scrollbar-thumb {
-            background-color: rgba(140, 150, 180, 0.3);
+            background-color: rgba(128, 126, 155, 0.25);
             border-radius: 9999px;
+        }
+        input[type="range"] {
+            accent-color: #EE537C;
         }
     </style>
     <!-- React & ReactDOM Production CDNs -->
@@ -43,158 +70,11 @@
     <!-- Babel for JSX compilation -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
-<body class="h-full antialiased transition-colors duration-300">
+<body class="h-full antialiased bg-[#F8F9FD] text-[#363671]">
     <div id="root" class="h-full"></div>
 
     <script type="text/babel">
-        const PALETTES = {
-            nordic: {
-                id: 'nordic',
-                name: 'Nordic Periwinkle',
-                tag: 'Palette 1',
-                emoji: '❄️',
-                isDark: false,
-                bodyBg: 'bg-[#F8F9FC]',
-                bodyBgHex: '#F8F9FC',
-                headerBg: 'bg-[#FFFFFF]/90 border-[#BFC8EA]',
-                cardBg: 'bg-[#FFFFFF] border-[#BFC8EA] shadow-[0_10px_30px_rgba(123,134,170,0.12)]',
-                textPrimary: 'text-[#545051]',
-                textMuted: 'text-[#7B86AA]',
-                inputBg: 'bg-[#F8F9FC] border-[#BFC8EA] text-[#545051]',
-                btnPrimary: 'bg-[#5B67A2] hover:bg-[#4E598E] text-[#FFFFFF]',
-                btnSecondary: 'bg-[#FFFFFF] hover:bg-[#F8F9FC] border-[#BFC8EA] text-[#545051]',
-                accentText: 'text-[#5B67A2]',
-                badgeBorder: 'border-[#BFC8EA]',
-                badgeBg: 'bg-[#BFC8EA]/40 text-[#5B67A2]',
-                chipActive: 'bg-[#5B67A2] text-[#FFFFFF] border-[#5B67A2]',
-                chipInactive: 'bg-[#FFFFFF] text-[#545051] border-[#BFC8EA] hover:bg-[#F8F9FC]',
-                gaugeTrack: 'bg-[#BFC8EA]/30',
-                gaugeBar: 'bg-[#738BE7]',
-                accentColorHex: '#738BE7',
-                subCardBg: 'bg-[#F8F9FC]/70 border-[#BFC8EA]',
-                divider: 'border-[#BFC8EA]/60',
-                footerBorder: 'border-[#BFC8EA]/60',
-                tabActive: 'bg-[#5B67A2] text-white border-[#5B67A2]',
-                tabInactive: 'text-[#7B86AA] hover:text-[#545051]',
-            },
-            sunset: {
-                id: 'sunset',
-                name: 'Sunset Coral & Plum',
-                tag: 'Palette 2',
-                emoji: '🌅',
-                isDark: true,
-                bodyBg: 'bg-[#35284A]',
-                bodyBgHex: '#35284A',
-                headerBg: 'bg-[#291E3B]/90 border-[#816F90]',
-                cardBg: 'bg-[#271C38] border-[#816F90] shadow-[0_12px_36px_rgba(0,0,0,0.4)]',
-                textPrimary: 'text-[#F8D9C3]',
-                textMuted: 'text-[#FADDA5]',
-                inputBg: 'bg-[#1E152B] border-[#816F90]/70 text-[#F8D9C3]',
-                btnPrimary: 'bg-[#FB7D79] hover:bg-[#F56C68] text-[#271C38] font-bold',
-                btnSecondary: 'bg-[#35284A] hover:bg-[#3E2F56] border-[#816F90] text-[#F8D9C3]',
-                accentText: 'text-[#FB7D79]',
-                badgeBorder: 'border-[#816F90]',
-                badgeBg: 'bg-[#FB9D7E]/25 text-[#FB7D79]',
-                chipActive: 'bg-[#FB7D79] text-[#271C38] border-[#FB7D79] font-bold',
-                chipInactive: 'bg-[#1E152B] text-[#F8D9C3] border-[#816F90]/70 hover:bg-[#35284A]',
-                gaugeTrack: 'bg-[#1E152B]',
-                gaugeBar: 'bg-gradient-to-r from-[#FB9D7E] to-[#FB7D79]',
-                accentColorHex: '#FB7D79',
-                subCardBg: 'bg-[#1E152B]/70 border-[#816F90]/70',
-                divider: 'border-[#816F90]/50',
-                footerBorder: 'border-[#816F90]/50',
-                tabActive: 'bg-[#FB7D79] text-[#271C38] border-[#FB7D79] font-bold',
-                tabInactive: 'text-[#816F90] hover:text-[#F8D9C3]',
-            },
-            navy: {
-                id: 'navy',
-                name: 'Deep Navy & Sage Olive',
-                tag: 'Palette 6',
-                emoji: '⚓️',
-                isDark: true,
-                bodyBg: 'bg-[#040A1B]',
-                bodyBgHex: '#040A1B',
-                headerBg: 'bg-[#0A122A]/90 border-[#334465]',
-                cardBg: 'bg-[#0C1429] border-[#334465] shadow-[0_14px_40px_rgba(0,0,0,0.6)]',
-                textPrimary: 'text-[#FEFEFE]',
-                textMuted: 'text-[#A5BECF]',
-                inputBg: 'bg-[#040A1B] border-[#334465] text-[#FEFEFE]',
-                btnPrimary: 'bg-[#335495] hover:bg-[#2A457D] text-[#FEFEFE] border border-[#668BC4]/30',
-                btnSecondary: 'bg-[#0A122A] hover:bg-[#121E3E] border-[#334465] text-[#FEFEFE]',
-                accentText: 'text-[#91A471]',
-                badgeBorder: 'border-[#334465]',
-                badgeBg: 'bg-[#91A471]/20 text-[#91A471]',
-                chipActive: 'bg-[#91A471] text-[#040A1B] border-[#91A471] font-bold',
-                chipInactive: 'bg-[#040A1B] text-[#A5BECF] border-[#334465] hover:bg-[#0A122A]',
-                gaugeTrack: 'bg-[#040A1B]',
-                gaugeBar: 'bg-[#91A471]',
-                accentColorHex: '#91A471',
-                subCardBg: 'bg-[#040A1B]/70 border-[#334465]',
-                divider: 'border-[#334465]/60',
-                footerBorder: 'border-[#334465]/60',
-                tabActive: 'bg-[#335495] text-white border-[#668BC4]/40 font-bold',
-                tabInactive: 'text-[#A5BECF] hover:text-white',
-            },
-            lime: {
-                id: 'lime',
-                name: 'Cyber Lime & Slate Navy',
-                tag: 'Cyber Lime',
-                emoji: '🌱',
-                isDark: false,
-                bodyBg: 'bg-[#FCFEF9]',
-                bodyBgHex: '#FCFEF9',
-                headerBg: 'bg-[#FFFFFF]/90 border-[#ADD96A]',
-                cardBg: 'bg-[#FFFFFF] border-[#ADD96A] shadow-[0_10px_30px_rgba(130,204,0,0.12)]',
-                textPrimary: 'text-[#283B51]',
-                textMuted: 'text-[#81A76A]',
-                inputBg: 'bg-[#FCFEF9] border-[#C8CED1] text-[#283B51]',
-                btnPrimary: 'bg-[#82CC00] hover:bg-[#74B800] text-[#283B51] font-bold',
-                btnSecondary: 'bg-[#EAF5D2] hover:bg-[#DDF0C0] border-[#ADD96A] text-[#283B51]',
-                accentText: 'text-[#82CC00]',
-                badgeBorder: 'border-[#81A76A]',
-                badgeBg: 'bg-[#EAF5D2] text-[#283B51]',
-                chipActive: 'bg-[#82CC00] text-[#283B51] border-[#82CC00] font-bold',
-                chipInactive: 'bg-[#FCFEF9] text-[#283B51] border-[#C8CED1] hover:bg-[#EAF5D2]',
-                gaugeTrack: 'bg-[#EAF5D2]',
-                gaugeBar: 'bg-[#82CC00]',
-                accentColorHex: '#82CC00',
-                subCardBg: 'bg-[#FCFEF9]/80 border-[#C8CED1]',
-                divider: 'border-[#C8CED1]/60',
-                footerBorder: 'border-[#ADD96A]/60',
-                tabActive: 'bg-[#82CC00] text-[#283B51] border-[#82CC00] font-bold',
-                tabInactive: 'text-[#81A76A] hover:text-[#283B51]',
-            }
-        };
-
         function App() {
-            // Theme state supporting Nordic (1), Sunset (2), and Navy Sage (6)
-            const [themeKey, setThemeKey] = React.useState(() => {
-                try {
-                    const saved = localStorage.getItem('yabadabapw_palette');
-                    if (saved && PALETTES[saved]) return saved;
-                    return 'nordic';
-                } catch (e) {
-                    return 'nordic';
-                }
-            });
-
-            const t = PALETTES[themeKey] || PALETTES.nordic;
-
-            // Synchronize document dark class and background color
-            React.useEffect(() => {
-                try {
-                    if (t.isDark) {
-                        document.documentElement.classList.add('dark');
-                    } else {
-                        document.documentElement.classList.remove('dark');
-                    }
-                    document.body.className = `h-full antialiased transition-colors duration-300 ${t.bodyBg}`;
-                    localStorage.setItem('yabadabapw_palette', themeKey);
-                } catch (e) {
-                    console.error('Failed to sync theme', e);
-                }
-            }, [themeKey, t]);
-
             const [password, setPassword] = React.useState('');
             const [length, setLength] = React.useState(16);
             const [includeUpper, setIncludeUpper] = React.useState(true);
@@ -262,7 +142,7 @@
             // Calculate mathematical entropy in bits
             const getStrengthMetrics = () => {
                 if (!password || password.startsWith('Error')) {
-                    return { bits: 0, label: 'None', width: '0%' };
+                    return { bits: 0, label: 'None', width: '0%', color: '#807E9B' };
                 }
                 let poolSize = 0;
                 if (includeUpper) poolSize += filterAmbiguous(uppercaseBase).length;
@@ -270,17 +150,17 @@
                 if (includeNumbers) poolSize += filterAmbiguous(numberBase).length;
                 if (includeSymbols && isCustomSymbolsValid()) poolSize += filterAmbiguous(getActiveSymbols()).length;
 
-                if (poolSize === 0) return { bits: 0, label: 'None', width: '0%' };
+                if (poolSize === 0) return { bits: 0, label: 'None', width: '0%', color: '#807E9B' };
 
                 const bits = Math.round(password.length * Math.log2(poolSize));
                 if (bits < 36) {
-                    return { bits, label: 'Weak', width: '25%' };
+                    return { bits, label: 'Weak', width: '25%', color: '#EB927B' };
                 } else if (bits < 60) {
-                    return { bits, label: 'Fair', width: '50%' };
+                    return { bits, label: 'Fair', width: '50%', color: '#EB927B' };
                 } else if (bits < 80) {
-                    return { bits, label: 'Strong', width: '75%' };
+                    return { bits, label: 'Strong', width: '75%', color: '#8FC9BF' };
                 } else {
-                    return { bits, label: 'Very Strong', width: '100%' };
+                    return { bits, label: 'Very Strong', width: '100%', color: '#8FC9BF' };
                 }
             };
 
@@ -449,7 +329,7 @@
 
             const downloadListAsTxt = () => {
                 if (!Array.isArray(savedPasswords) || savedPasswords.length === 0) return;
-                const fileContent = `# YabadabaPW Vault Export\n# Theme: ${t.name}\n# Exported on ${new Date().toLocaleString()}\n\n` + savedPasswords.join('\n');
+                const fileContent = `# YabadabaPW Vault Export\n# Theme: Palette #566 (Colorion)\n# Exported on ${new Date().toLocaleString()}\n\n` + savedPasswords.join('\n');
                 const blob = new Blob([fileContent], { type: 'text/plain;charset=utf-8' });
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
@@ -461,76 +341,80 @@
                 URL.revokeObjectURL(url);
             };
 
+            // Quick preset handler
+            const applyPreset = (presetName) => {
+                if (presetName === 'standard') {
+                    setLength(16);
+                    setIncludeUpper(true);
+                    setIncludeLower(true);
+                    setIncludeNumbers(true);
+                    setIncludeSymbols(true);
+                    setExcludeAmbiguous(false);
+                    setLeadingChar('any');
+                } else if (presetName === 'pin') {
+                    setLength(6);
+                    setIncludeUpper(false);
+                    setIncludeLower(false);
+                    setIncludeNumbers(true);
+                    setIncludeSymbols(false);
+                    setExcludeAmbiguous(false);
+                    setLeadingChar('any');
+                } else if (presetName === 'alphanumeric') {
+                    setLength(20);
+                    setIncludeUpper(true);
+                    setIncludeLower(true);
+                    setIncludeNumbers(true);
+                    setIncludeSymbols(false);
+                    setExcludeAmbiguous(true);
+                    setLeadingChar('any');
+                } else if (presetName === 'maximum') {
+                    setLength(32);
+                    setIncludeUpper(true);
+                    setIncludeLower(true);
+                    setIncludeNumbers(true);
+                    setIncludeSymbols(true);
+                    setExcludeAmbiguous(false);
+                    setLeadingChar('upper');
+                }
+            };
+
             const strength = getStrengthMetrics();
             const isError = !password || password.startsWith('Error');
 
             return (
-                <div className={`${t.bodyBg} ${t.textPrimary} min-h-full flex flex-col justify-between transition-colors duration-300 font-sans`}>
+                <div className="bg-[#F8F9FD] text-[#363671] min-h-full flex flex-col justify-between font-sans">
                     
-                    {/* Top App Bar with 3-Palette Switcher */}
-                    <header className={`border-b ${t.headerBg} sticky top-0 z-20 backdrop-blur-md transition-colors`}>
+                    {/* Top App Bar */}
+                    <header className="border-b border-[#807E9B]/20 bg-white/95 sticky top-0 z-20 backdrop-blur-md">
                         <div className="max-w-4xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0">
                             <div className="flex items-center space-x-3.5">
-                                <div className={`w-10 h-10 rounded-2xl ${t.btnPrimary} flex items-center justify-center font-bold text-lg shadow-sm transition-all`}>
+                                <div className="w-10 h-10 rounded-2xl bg-[#363671] text-white flex items-center justify-center font-bold text-lg shadow-sm">
                                     YP
                                 </div>
                                 <div>
                                     <div className="flex items-center space-x-2">
-                                        <h1 className="text-xl font-bold tracking-tight leading-none">
+                                        <h1 className="text-xl font-bold tracking-tight text-[#363671]">
                                             YabadabaPW
                                         </h1>
-                                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${t.badgeBg} ${t.badgeBorder}`}>
-                                            {t.tag}
+                                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#8FC9BF]/20 text-[#363671] border border-[#8FC9BF]/50">
+                                            Palette #566
                                         </span>
                                     </div>
-                                    <p className={`text-[11px] font-medium mt-1 ${t.textMuted}`}>
+                                    <p className="text-[11px] font-medium text-[#807E9B]">
                                         Custom Rule-Compliant Strong Password Generator
                                     </p>
                                 </div>
                             </div>
 
-                            {/* 4-Palette Switcher Buttons */}
-                            <div className="flex flex-wrap items-center justify-center gap-1 p-1 rounded-2xl border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5">
-                                <button
-                                    onClick={() => setThemeKey('nordic')}
-                                    className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1 border ${
-                                        themeKey === 'nordic' ? PALETTES.nordic.tabActive : PALETTES.nordic.tabInactive + ' border-transparent'
-                                    }`}
-                                    title="Palette 1: Nordic Periwinkle (Light Mode)"
-                                >
-                                    <span>❄️</span>
-                                    <span>Nordic</span>
-                                </button>
-                                <button
-                                    onClick={() => setThemeKey('sunset')}
-                                    className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1 border ${
-                                        themeKey === 'sunset' ? PALETTES.sunset.tabActive : PALETTES.sunset.tabInactive + ' border-transparent'
-                                    }`}
-                                    title="Palette 2: Sunset Coral & Plum (Dark Mode)"
-                                >
-                                    <span>🌅</span>
-                                    <span>Sunset</span>
-                                </button>
-                                <button
-                                    onClick={() => setThemeKey('navy')}
-                                    className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1 border ${
-                                        themeKey === 'navy' ? PALETTES.navy.tabActive : PALETTES.navy.tabInactive + ' border-transparent'
-                                    }`}
-                                    title="Palette 6: Deep Navy & Sage (Dark Mode)"
-                                >
-                                    <span>⚓️</span>
-                                    <span>Navy</span>
-                                </button>
-                                <button
-                                    onClick={() => setThemeKey('lime')}
-                                    className={`px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1 border ${
-                                        themeKey === 'lime' ? PALETTES.lime.tabActive : PALETTES.lime.tabInactive + ' border-transparent'
-                                    }`}
-                                    title="Cyber Lime & Slate Navy"
-                                >
-                                    <span>🌱</span>
-                                    <span>Lime</span>
-                                </button>
+                            {/* Palette Swatches Bar */}
+                            <div className="flex items-center space-x-1.5 p-1.5 rounded-2xl bg-[#F8F9FD] border border-[#807E9B]/20 shadow-sm" title="Palette #566: #FFFFFF, #363671, #3E5196, #EE537C, #EB927B, #8FC9BF, #807E9B">
+                                <span className="w-3.5 h-3.5 rounded-full border border-black/15 shadow-sm" style={{ background: '#FFFFFF' }} title="#FFFFFF"></span>
+                                <span className="w-3.5 h-3.5 rounded-full shadow-sm" style={{ background: '#363671' }} title="#363671"></span>
+                                <span className="w-3.5 h-3.5 rounded-full shadow-sm" style={{ background: '#3E5196' }} title="#3E5196"></span>
+                                <span className="w-3.5 h-3.5 rounded-full shadow-sm" style={{ background: '#EE537C' }} title="#EE537C"></span>
+                                <span className="w-3.5 h-3.5 rounded-full shadow-sm" style={{ background: '#EB927B' }} title="#EB927B"></span>
+                                <span className="w-3.5 h-3.5 rounded-full shadow-sm" style={{ background: '#8FC9BF' }} title="#8FC9BF"></span>
+                                <span className="w-3.5 h-3.5 rounded-full shadow-sm" style={{ background: '#807E9B' }} title="#807E9B"></span>
                             </div>
                         </div>
                     </header>
@@ -538,18 +422,53 @@
                     {/* Main Content Area */}
                     <main className="max-w-3xl mx-auto px-6 py-8 w-full flex-grow space-y-6">
                         
+                        {/* Quick Presets Pills */}
+                        <div className="flex flex-wrap items-center justify-between gap-2 bg-white border border-[#807E9B]/20 rounded-2xl px-4 py-3 shadow-[0_2px_10px_rgba(54,54,113,0.04)]">
+                            <span className="text-[11px] font-bold uppercase tracking-wider text-[#807E9B]">Quick Profiles:</span>
+                            <div className="flex flex-wrap gap-1.5">
+                                <button
+                                    type="button"
+                                    onClick={() => applyPreset('standard')}
+                                    className="px-3 py-1 rounded-xl text-xs font-bold transition-all bg-[#F8F9FD] hover:bg-[#EEF1F8] border border-[#807E9B]/30 text-[#363671]"
+                                >
+                                    Standard 16
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => applyPreset('alphanumeric')}
+                                    className="px-3 py-1 rounded-xl text-xs font-bold transition-all bg-[#F8F9FD] hover:bg-[#EEF1F8] border border-[#807E9B]/30 text-[#363671]"
+                                >
+                                    URL-Safe 20
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => applyPreset('maximum')}
+                                    className="px-3 py-1 rounded-xl text-xs font-bold transition-all bg-[#F8F9FD] hover:bg-[#EEF1F8] border border-[#807E9B]/30 text-[#363671]"
+                                >
+                                    High Security 32
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => applyPreset('pin')}
+                                    className="px-3 py-1 rounded-xl text-xs font-bold transition-all bg-[#F8F9FD] hover:bg-[#EEF1F8] border border-[#807E9B]/30 text-[#363671]"
+                                >
+                                    PIN (6 Digits)
+                                </button>
+                            </div>
+                        </div>
+
                         {/* Password Viewport Card */}
-                        <div className={`rounded-3xl p-6 sm:p-7 border transition-all ${t.cardBg}`}>
-                            <div className="flex justify-between items-center mb-3">
+                        <div className="bg-white border border-[#807E9B]/20 rounded-3xl p-6 sm:p-7 shadow-[0_10px_30px_rgba(54,54,113,0.06)] space-y-4">
+                            <div className="flex justify-between items-center text-xs">
                                 <div className="flex items-center space-x-2">
-                                    <span className={`w-2 h-2 rounded-full ${t.accentBg}`}></span>
-                                    <label className={`text-xs font-bold uppercase tracking-wider ${t.textMuted}`}>
+                                    <span className="w-2 h-2 rounded-full bg-[#EE537C]"></span>
+                                    <label className="text-xs font-bold uppercase tracking-wider text-[#807E9B]">
                                         Generated Password
                                     </label>
                                 </div>
                                 {!isError && (
-                                    <div className={`px-3 py-1 rounded-full text-xs font-bold border flex items-center space-x-1.5 ${t.badgeBg} ${t.badgeBorder}`}>
-                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
+                                    <div className="px-3 py-1 rounded-full text-xs font-bold border border-[#8FC9BF] bg-[#8FC9BF]/20 text-[#363671] flex items-center space-x-1.5 shadow-sm">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-[#8FC9BF] inline-block"></span>
                                         <span className="font-mono text-xs">{strength.bits} BITS</span>
                                         <span className="opacity-40">•</span>
                                         <span>{strength.label}</span>
@@ -560,10 +479,10 @@
                             {/* Password Box & Actions */}
                             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                                 <div 
-                                    className={`rounded-2xl px-5 py-4 font-mono text-xl sm:text-2xl tracking-wider flex-grow select-all break-all border transition-colors ${
+                                    className={`rounded-2xl px-5 py-4 font-mono text-xl sm:text-2xl font-bold tracking-wider flex-grow select-all break-all border transition-colors ${
                                         isError
-                                            ? 'border-rose-500/50 text-rose-500 bg-rose-500/10'
-                                            : t.inputBg
+                                            ? 'border-rose-500/50 text-rose-500 bg-rose-50'
+                                            : 'bg-[#F8F9FD] border-[#807E9B]/30 text-[#363671] shadow-inner'
                                     }`}
                                 >
                                     {String(password || '')}
@@ -572,19 +491,19 @@
                                     <button
                                         onClick={() => copyToClipboard(password)}
                                         disabled={isError}
-                                        className={`px-6 py-4 font-bold text-xs uppercase tracking-wider rounded-2xl transition-all flex items-center justify-center space-x-2 shadow-sm ${
+                                        className={`px-6 py-4 font-bold text-xs uppercase tracking-wider rounded-2xl transition-all flex items-center justify-center space-x-2 shadow-[0_4px_14px_rgba(238,83,124,0.35)] ${
                                             isError
-                                                ? 'opacity-40 cursor-not-allowed bg-zinc-300 text-zinc-500'
+                                                ? 'opacity-40 cursor-not-allowed bg-zinc-200 text-zinc-400'
                                                 : copied 
-                                                    ? 'bg-emerald-600 text-white' 
-                                                    : t.btnPrimary
+                                                    ? 'bg-emerald-600 text-white shadow-none' 
+                                                    : 'bg-[#EE537C] hover:bg-[#DE3F68] text-white active:scale-95'
                                         }`}
                                     >
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             {copied ? (
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7"/>
                                             ) : (
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
                                             )}
                                         </svg>
                                         <span>{copied ? 'Copied' : 'Copy'}</span>
@@ -593,42 +512,46 @@
                                     <button
                                         onClick={saveToList}
                                         disabled={isError}
-                                        className={`p-4 rounded-2xl border transition-all flex items-center justify-center shadow-sm ${
-                                            isError ? 'opacity-40 cursor-not-allowed' : t.btnSecondary
-                                        }`}
+                                        className="p-4 rounded-2xl border-2 border-[#363671] text-[#363671] bg-white hover:bg-[#F8F9FD] transition-all flex items-center justify-center shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
                                         title="Save password to vault"
                                     >
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"/>
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M12 4v16m8-8H4"/>
                                         </svg>
                                     </button>
 
                                     <button
                                         onClick={generatePassword}
-                                        className={`p-4 rounded-2xl border transition-all flex items-center justify-center shadow-sm active:rotate-180 duration-500 ${t.btnSecondary}`}
+                                        className="p-4 rounded-2xl border border-[#807E9B]/30 text-[#3E5196] bg-white hover:bg-[#F8F9FD] transition-all flex items-center justify-center shadow-sm active:rotate-180 duration-500"
                                         title="Generate new key"
                                     >
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                                         </svg>
                                     </button>
                                 </div>
                             </div>
 
-                            {/* Entropy Gauge Line */}
+                            {/* Dual Gauge Bar (Colorion Team Health Inspiration) */}
                             {!isError && (
-                                <div className="mt-4">
-                                    <div className={`w-full h-1.5 rounded-full overflow-hidden ${t.gaugeTrack}`}>
+                                <div className="space-y-1.5 pt-1">
+                                    <div className="w-full bg-[#EBF0F5] h-2 rounded-full overflow-hidden">
                                         <div 
-                                            className={`h-full transition-all duration-300 rounded-full ${t.gaugeBar}`}
-                                            style={{ width: strength.width }}
+                                            className="h-full transition-all duration-300 rounded-full"
+                                            style={{ width: strength.width, background: '#8FC9BF' }}
+                                        />
+                                    </div>
+                                    <div className="w-2/3 bg-[#EBF0F5] h-1.5 rounded-full overflow-hidden">
+                                        <div 
+                                            className="h-full transition-all duration-300 rounded-full"
+                                            style={{ width: `${Math.min(100, Math.round((length / 32) * 100))}%`, background: '#EE537C' }}
                                         />
                                     </div>
                                 </div>
                             )}
 
                             {saveNotification && (
-                                <p className="text-xs font-semibold mt-3 text-emerald-500 flex items-center space-x-1">
+                                <p className="text-xs font-semibold mt-3 text-emerald-600 flex items-center space-x-1">
                                     <span>✓</span>
                                     <span>Preserved in your local vault below.</span>
                                 </p>
@@ -636,12 +559,12 @@
                         </div>
 
                         {/* Configuration Dashboard Card */}
-                        <div className={`rounded-3xl p-6 sm:p-7 border space-y-6 transition-all ${t.cardBg}`}>
+                        <div className="bg-white border border-[#807E9B]/20 rounded-3xl p-6 sm:p-7 shadow-[0_10px_30px_rgba(54,54,113,0.06)] space-y-6">
                             
                             {/* Length Slider & Quick Preset Chips */}
                             <div className="space-y-3">
                                 <div className="flex justify-between items-center text-xs font-bold uppercase tracking-wider">
-                                    <span className={t.textMuted}>
+                                    <span className="text-[#807E9B]">
                                         Password Length
                                     </span>
                                     <div className="flex items-center space-x-2">
@@ -651,15 +574,17 @@
                                                     key={preset}
                                                     type="button"
                                                     onClick={() => setLength(preset)}
-                                                    className={`px-2.5 py-1 rounded-lg text-xs transition-all border ${
-                                                        length === preset ? t.chipActive : t.chipInactive
+                                                    className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all border ${
+                                                        length === preset 
+                                                            ? 'bg-[#363671] text-white border-[#363671]' 
+                                                            : 'bg-[#F8F9FD] text-[#363671] border-[#807E9B]/30 hover:bg-[#EEF1F8]'
                                                     }`}
                                                 >
                                                     {preset}
                                                 </button>
                                             ))}
                                         </div>
-                                        <span className={`font-mono px-3 py-1 rounded-full border text-xs font-bold ${t.badgeBg} ${t.badgeBorder}`}>
+                                        <span className="font-mono px-3 py-1 rounded-full border border-[#807E9B]/30 bg-[#F8F9FD] text-[#363671] text-xs font-bold">
                                             {String(length)} Chars
                                         </span>
                                     </div>
@@ -670,10 +595,9 @@
                                     max="64"
                                     value={length}
                                     onChange={(e) => setLength(parseInt(e.target.value, 10))}
-                                    className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-black/10 dark:bg-white/10 accent-current"
-                                    style={{ accentColor: t.accentColorHex }}
+                                    className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-[#F8F9FD]"
                                 />
-                                <div className={`flex justify-between text-[11px] font-mono ${t.textMuted}`}>
+                                <div className="flex justify-between text-[11px] font-mono text-[#807E9B]">
                                     <span>8</span>
                                     <span>24</span>
                                     <span>40</span>
@@ -681,37 +605,45 @@
                                 </div>
                             </div>
 
-                            <hr className={t.divider} />
+                            <hr className="border-t border-[#807E9B]/20" />
 
                             {/* Character Set Toggles */}
                             <div className="space-y-3">
-                                <label className={`text-xs font-bold uppercase tracking-wider block ${t.textMuted}`}>
+                                <label className="text-xs font-bold uppercase tracking-wider block text-[#807E9B]">
                                     Character Sets
                                 </label>
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                                    <label className={`flex items-center space-x-2.5 p-3.5 rounded-2xl border cursor-pointer transition-all ${
-                                        includeUpper ? t.chipActive : t.chipInactive
+                                    <label className={`flex items-center space-x-2.5 p-3.5 rounded-2xl border-2 cursor-pointer transition-all ${
+                                        includeUpper 
+                                            ? 'border-[#363671] bg-[#F8F9FD] text-[#363671] font-bold shadow-sm' 
+                                            : 'border-[#807E9B]/30 bg-white text-[#807E9B]'
                                     }`}>
-                                        <input type="checkbox" checked={includeUpper} onChange={(e) => setIncludeUpper(e.target.checked)} className="rounded border-current"/>
-                                        <span className="text-xs font-semibold">Uppercase</span>
+                                        <input type="checkbox" checked={includeUpper} onChange={(e) => setIncludeUpper(e.target.checked)} className="rounded accent-[#363671]"/>
+                                        <span className="text-xs">Uppercase</span>
                                     </label>
-                                    <label className={`flex items-center space-x-2.5 p-3.5 rounded-2xl border cursor-pointer transition-all ${
-                                        includeLower ? t.chipActive : t.chipInactive
+                                    <label className={`flex items-center space-x-2.5 p-3.5 rounded-2xl border-2 cursor-pointer transition-all ${
+                                        includeLower 
+                                            ? 'border-[#363671] bg-[#F8F9FD] text-[#363671] font-bold shadow-sm' 
+                                            : 'border-[#807E9B]/30 bg-white text-[#807E9B]'
                                     }`}>
-                                        <input type="checkbox" checked={includeLower} onChange={(e) => setIncludeLower(e.target.checked)} className="rounded border-current"/>
-                                        <span className="text-xs font-semibold">Lowercase</span>
+                                        <input type="checkbox" checked={includeLower} onChange={(e) => setIncludeLower(e.target.checked)} className="rounded accent-[#363671]"/>
+                                        <span className="text-xs">Lowercase</span>
                                     </label>
-                                    <label className={`flex items-center space-x-2.5 p-3.5 rounded-2xl border cursor-pointer transition-all ${
-                                        includeNumbers ? t.chipActive : t.chipInactive
+                                    <label className={`flex items-center space-x-2.5 p-3.5 rounded-2xl border-2 cursor-pointer transition-all ${
+                                        includeNumbers 
+                                            ? 'border-[#363671] bg-[#F8F9FD] text-[#363671] font-bold shadow-sm' 
+                                            : 'border-[#807E9B]/30 bg-white text-[#807E9B]'
                                     }`}>
-                                        <input type="checkbox" checked={includeNumbers} onChange={(e) => setIncludeNumbers(e.target.checked)} className="rounded border-current"/>
-                                        <span className="text-xs font-semibold">Numbers</span>
+                                        <input type="checkbox" checked={includeNumbers} onChange={(e) => setIncludeNumbers(e.target.checked)} className="rounded accent-[#363671]"/>
+                                        <span className="text-xs">Numbers</span>
                                     </label>
-                                    <label className={`flex items-center space-x-2.5 p-3.5 rounded-2xl border cursor-pointer transition-all ${
-                                        includeSymbols ? t.chipActive : t.chipInactive
+                                    <label className={`flex items-center space-x-2.5 p-3.5 rounded-2xl border-2 cursor-pointer transition-all ${
+                                        includeSymbols 
+                                            ? 'border-[#363671] bg-[#F8F9FD] text-[#363671] font-bold shadow-sm' 
+                                            : 'border-[#807E9B]/30 bg-white text-[#807E9B]'
                                     }`}>
-                                        <input type="checkbox" checked={includeSymbols} onChange={(e) => setIncludeSymbols(e.target.checked)} className="rounded border-current"/>
-                                        <span className="text-xs font-semibold">Symbols</span>
+                                        <input type="checkbox" checked={includeSymbols} onChange={(e) => setIncludeSymbols(e.target.checked)} className="rounded accent-[#363671]"/>
+                                        <span className="text-xs">Symbols</span>
                                     </label>
                                 </div>
                             </div>
@@ -719,17 +651,19 @@
                             {/* Ambiguous Chars Toggle */}
                             <div>
                                 <label className={`flex items-center space-x-2.5 p-3.5 rounded-2xl border cursor-pointer transition-all ${
-                                    excludeAmbiguous ? t.chipActive : t.chipInactive
+                                    excludeAmbiguous 
+                                        ? 'border-[#363671] bg-[#F8F9FD] text-[#363671] shadow-sm' 
+                                        : 'border-[#807E9B]/30 bg-white text-[#807E9B]'
                                 }`}>
                                     <input 
                                         type="checkbox" 
                                         checked={excludeAmbiguous} 
                                         onChange={(e) => setExcludeAmbiguous(e.target.checked)} 
-                                        className="rounded border-current"
+                                        className="rounded accent-[#363671]"
                                     />
                                     <div className="text-xs">
-                                        <span className="font-bold">Exclude Ambiguous Characters</span>
-                                        <span className={`block text-[11px] font-mono mt-0.5 opacity-80`}>
+                                        <span className="font-bold text-[#363671]">Exclude Ambiguous Characters</span>
+                                        <span className="block text-[11px] font-mono mt-0.5 text-[#807E9B]">
                                             Filters out visually confusing chars (0, O, o, 1, l, I, |, ;, :)
                                         </span>
                                     </div>
@@ -738,14 +672,14 @@
 
                             {/* Leading Char & Custom Symbols Row */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
-                                <div className={`border rounded-2xl p-4 space-y-2 ${t.subCardBg}`}>
-                                    <label className={`text-xs font-bold uppercase tracking-wider block ${t.textMuted}`}>
+                                <div className="border border-[#807E9B]/30 bg-[#F8F9FD] rounded-2xl p-4 space-y-2">
+                                    <label className="text-xs font-bold uppercase tracking-wider block text-[#807E9B]">
                                         Start With (Leading Character)
                                     </label>
                                     <select
                                         value={leadingChar}
                                         onChange={(e) => setLeadingChar(e.target.value)}
-                                        className={`w-full border rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none ${t.inputBg}`}
+                                        className="w-full bg-white border border-[#807E9B]/30 rounded-xl px-3 py-2 text-xs font-bold text-[#363671] focus:outline-none"
                                     >
                                         <option value="any">Any (Random Start)</option>
                                         <option value="upper" disabled={!includeUpper}>Uppercase Letter (A-Z)</option>
@@ -755,9 +689,9 @@
                                     </select>
                                 </div>
 
-                                <div className={`border rounded-2xl p-4 space-y-2 ${t.subCardBg}`}>
+                                <div className="border border-[#807E9B]/30 bg-[#F8F9FD] rounded-2xl p-4 space-y-2">
                                     <div className="flex justify-between items-center">
-                                        <label className={`text-xs font-bold uppercase tracking-wider ${t.textMuted}`}>
+                                        <label className="text-xs font-bold uppercase tracking-wider text-[#807E9B]">
                                             Custom Allowed Symbols
                                         </label>
                                         <div className="flex space-x-1 text-[11px]">
@@ -765,7 +699,9 @@
                                                 type="button"
                                                 onClick={() => setSymbolMode('default')} 
                                                 className={`px-2.5 py-0.5 rounded-full border transition-all text-xs font-bold ${
-                                                    symbolMode === 'default' ? t.chipActive : 'border-transparent opacity-60 hover:opacity-100'
+                                                    symbolMode === 'default' 
+                                                        ? 'bg-[#363671] text-white border-[#363671]' 
+                                                        : 'border-transparent text-[#807E9B] hover:text-[#363671]'
                                                 }`}
                                             >
                                                 Default
@@ -774,7 +710,9 @@
                                                 type="button"
                                                 onClick={() => setSymbolMode('custom')} 
                                                 className={`px-2.5 py-0.5 rounded-full border transition-all text-xs font-bold ${
-                                                    symbolMode === 'custom' ? t.chipActive : 'border-transparent opacity-60 hover:opacity-100'
+                                                    symbolMode === 'custom' 
+                                                        ? 'bg-[#363671] text-white border-[#363671]' 
+                                                        : 'border-transparent text-[#807E9B] hover:text-[#363671]'
                                                 }`}
                                             >
                                                 Custom
@@ -788,16 +726,22 @@
                                                 value={customSymbols}
                                                 onChange={(e) => setCustomSymbols(e.target.value)}
                                                 placeholder="Enter at least 3 symbols"
-                                                className={`w-full border rounded-xl px-3 py-2 text-xs font-mono focus:outline-none ${
-                                                    !isCustomSymbolsValid() ? 'border-rose-500' : t.inputBg
+                                                className={`w-full bg-white border rounded-xl px-3 py-2 text-xs font-mono text-[#363671] focus:outline-none ${
+                                                    !isCustomSymbolsValid() ? 'border-rose-500' : 'border-[#807E9B]/30'
                                                 }`}
                                             />
-                                            {!isCustomSymbolsValid() && (
+                                            {!isCustomSymbolsValid() ? (
                                                 <p className="text-[10px] text-rose-500 mt-1 font-semibold">Require at least 3 custom symbols.</p>
+                                            ) : (
+                                                <div className="mt-1 flex items-center gap-1.5">
+                                                    <span className="text-[10px] font-bold px-2 py-0.5 rounded" style={{ background: '#FEECE7', color: '#C85942' }}>
+                                                        #EB927B Custom Active
+                                                    </span>
+                                                </div>
                                             )}
                                         </div>
                                     ) : (
-                                        <div className={`text-xs px-3 py-2 rounded-xl border font-mono truncate ${t.inputBg}`}>
+                                        <div className="text-xs px-3 py-2 rounded-xl border border-[#807E9B]/30 bg-white font-mono text-[#363671] truncate">
                                             {defaultSymbols}
                                         </div>
                                     )}
@@ -807,13 +751,13 @@
 
                         {/* Local Vault Card */}
                         {Array.isArray(savedPasswords) && savedPasswords.length > 0 && (
-                            <div className={`rounded-3xl p-6 sm:p-7 border space-y-3 transition-all ${t.cardBg}`}>
+                            <div className="bg-white border border-[#807E9B]/20 rounded-3xl p-6 sm:p-7 shadow-[0_10px_30px_rgba(54,54,113,0.06)] space-y-3">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center space-x-2">
-                                        <h3 className="text-lg font-bold tracking-tight">
+                                        <h3 className="text-lg font-bold tracking-tight text-[#363671]">
                                             Local Vault
                                         </h3>
-                                        <span className={`text-xs font-mono px-2.5 py-0.5 rounded-full border font-bold ${t.badgeBg} ${t.badgeBorder}`}>
+                                        <span className="text-xs font-mono px-2.5 py-0.5 rounded-full border border-[#8FC9BF] bg-[#8FC9BF]/20 text-[#363671] font-bold">
                                             {savedPasswords.length} stored
                                         </span>
                                     </div>
@@ -821,14 +765,14 @@
                                         <button
                                             type="button"
                                             onClick={downloadListAsTxt}
-                                            className={`px-3.5 py-1.5 text-xs font-bold rounded-xl border transition-all flex items-center space-x-1.5 ${t.btnSecondary}`}
+                                            className="px-3.5 py-1.5 text-xs font-bold rounded-xl border border-[#807E9B]/30 bg-white hover:bg-[#F8F9FD] text-[#363671] transition-all flex items-center space-x-1.5"
                                         >
                                             <span>Export .txt</span>
                                         </button>
                                         <button
                                             type="button"
                                             onClick={clearList}
-                                            className="px-3.5 py-1.5 text-xs font-bold rounded-xl border border-rose-500/30 text-rose-500 hover:bg-rose-500/10 transition-colors"
+                                            className="px-3.5 py-1.5 text-xs font-bold rounded-xl border border-rose-500/30 text-rose-500 hover:bg-rose-50 transition-colors"
                                         >
                                             Clear All
                                         </button>
@@ -836,8 +780,8 @@
                                 </div>
                                 <div className="max-h-56 overflow-y-auto space-y-2 pr-1 custom-scroll">
                                     {savedPasswords.map((item, index) => (
-                                        <div key={index} className={`border rounded-2xl px-4 py-2.5 flex items-center justify-between text-xs font-mono transition-all ${t.inputBg}`}>
-                                            <span className="truncate mr-4 select-all">{String(item || '')}</span>
+                                        <div key={index} className="border border-[#807E9B]/20 bg-[#F8F9FD] rounded-2xl px-4 py-2.5 flex items-center justify-between text-xs font-mono transition-all">
+                                            <span className="truncate mr-4 select-all text-[#363671]">{String(item || '')}</span>
                                             <div className="flex items-center space-x-2 shrink-0">
                                                 <button
                                                     type="button"
@@ -845,7 +789,7 @@
                                                     className={`text-[11px] font-sans px-3 py-1 rounded-xl border font-bold transition-all ${
                                                         copiedVaultIdx === index
                                                             ? 'bg-emerald-600 text-white border-transparent'
-                                                            : t.btnSecondary
+                                                            : 'bg-white hover:bg-[#F8F9FD] border-[#807E9B]/30 text-[#363671]'
                                                     }`}
                                                 >
                                                     {copiedVaultIdx === index ? '✓ Copied' : 'Copy'}
@@ -853,7 +797,7 @@
                                                 <button
                                                     type="button"
                                                     onClick={() => removeSavedItem(index)}
-                                                    className="opacity-50 hover:opacity-100 hover:text-rose-500 p-1 rounded-full transition-colors font-bold"
+                                                    className="opacity-50 hover:opacity-100 hover:text-rose-500 p-1 rounded-full transition-colors font-bold text-[#807E9B]"
                                                     title="Delete password"
                                                 >
                                                     ✕
@@ -867,22 +811,22 @@
 
                         {/* Security Specifications Card */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className={`rounded-3xl p-6 space-y-2 border ${t.subCardBg}`}>
-                                <h3 className="text-sm font-bold flex items-center space-x-1.5">
+                            <div className="bg-white border border-[#807E9B]/20 rounded-3xl p-6 space-y-2 shadow-[0_4px_16px_rgba(54,54,113,0.04)]">
+                                <h3 className="text-sm font-bold text-[#363671] flex items-center space-x-1.5">
                                     <span>🛡️</span>
                                     <span>Cryptographic Guarantee</span>
                                 </h3>
-                                <p className={`text-xs leading-relaxed ${t.textMuted}`}>
-                                    Entropy is generated via the native browser Web Crypto API (<code className="text-[11px] font-mono px-1 rounded bg-black/10 dark:bg-white/10">crypto.getRandomValues</code>) with uniform Fisher-Yates array permutation.
+                                <p className="text-xs leading-relaxed text-[#807E9B]">
+                                    Entropy is generated via the native browser Web Crypto API (<code className="text-[11px] font-mono px-1 rounded bg-[#F8F9FD] text-[#363671] border border-[#807E9B]/20">crypto.getRandomValues</code>) with uniform Fisher-Yates array permutation.
                                 </p>
                             </div>
 
-                            <div className={`rounded-3xl p-6 space-y-2 border ${t.subCardBg}`}>
-                                <h3 className="text-sm font-bold flex items-center space-x-1.5">
+                            <div className="bg-white border border-[#807E9B]/20 rounded-3xl p-6 space-y-2 shadow-[0_4px_16px_rgba(54,54,113,0.04)]">
+                                <h3 className="text-sm font-bold text-[#363671] flex items-center space-x-1.5">
                                     <span>🔒</span>
                                     <span>Client-Side Privacy</span>
                                 </h3>
-                                <p className={`text-xs leading-relaxed ${t.textMuted}`}>
+                                <p className="text-xs leading-relaxed text-[#807E9B]">
                                     100% in-memory client operation. No network packets, telemetry, or generated credentials ever leave your device.
                                 </p>
                             </div>
@@ -890,9 +834,9 @@
                     </main>
 
                     {/* Footer */}
-                    <footer className={`border-t py-6 text-center text-xs transition-colors ${t.footerBorder}`}>
-                        <p className={`font-medium ${t.textMuted}`}>
-                            YabadabaPW • Active Palette: <span className="font-bold">{t.name}</span>
+                    <footer className="border-t border-[#807E9B]/20 py-6 text-center text-xs bg-white/60">
+                        <p className="font-medium text-[#807E9B]">
+                            YabadabaPW • Single Dedicated Theme (Colorion Palette #566) • 100% Client-Side Cryptographic Security
                         </p>
                     </footer>
                 </div>

@@ -4,26 +4,23 @@
 **YabadabaPW** is a fast, client-side, zero-tracking Single Page Application designed to generate cryptographically strong passwords tailored to any website's specific policy rules (such as mandatory start characters, custom symbol constraints, and ambiguous-character filtering) while keeping an offline staging vault.
 
 ![Security-Client%20Side](https://img.shields.io/badge/Security-Client--Side%20Web%20Crypto-emerald)
+![Design-Colorion%20566](https://img.shields.io/badge/Design-Colorion%20%23566-363671)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 
 ---
 
-## 🎨 Four Handcrafted Themes
+## 🎨 Dedicated Aesthetic: Colorion Palette #566
 
-YabadabaPW includes a live header palette switcher supporting four distinct aesthetic profiles:
+YabadabaPW features a dedicated design based on **Colorion Palette #566**:
 
-1. **❄️ Nordic Periwinkle (Palette 1)**:
-   - Light-mode clean Scandinavian SaaS security aesthetic.
-   - Primary: `#5B67A2` • Secondary: `#738BE7` • Canvas: `#F8F9FC` • Accents: `#BFC8EA` & `#7B86AA`
-2. **🌅 Sunset Coral & Plum (Palette 2)**:
-   - Rich twilight dark mode with energetic warm sunset tones.
-   - Canvas: `#35284A` • Primary Coral: `#FB7D79` • Accents: `#FB9D7E`, `#F8CD9E` & `#F8D9C3`
-3. **⚓️ Deep Navy & Sage Olive (Palette 6)**:
-   - Executive defense dark mode combining oceanic depth with organic sage.
-   - Canvas: `#040A1B` • Navy: `#335495` • Accents: `#91A471`, `#668BC4` & `#A5BECF`
-4. **🌱 Cyber Lime & Slate Navy**:
-   - High-voltage modern organic tech aesthetic.
-   - Primary: `#82CC00` • Text & Headers: `#283B51` • Canvas: `#FCFEF9` • Cards: `#EAF5D2` • Accents: `#ADD96A` & `#81A76A`
+- **Pure White (`#FFFFFF`)**: Crisp card surfaces and button typography.
+- **Deep Indigo (`#363671`)**: Primary typography, bold headings, and high-contrast control borders.
+- **Slate Cobalt (`#3E5196`)**: Secondary labels and interactive accents.
+- **Vibrant Watermelon Rose (`#EE537C`)**: High-impact primary action CTA (`Copy`) and secondary metrics.
+- **Warm Coral Peach (`#EB927B`)**: Custom rule badges and warning highlights.
+- **Seafoam Mint (`#8FC9BF`)**: Strength rating badges (`84+ BITS • Very Strong`) and primary progress indicators.
+- **Muted Lavender Slate (`#807E9B`)**: Subtitles, helper text, and subtle dividers.
+- **Light Cloud Slate (`#F8F9FD`)**: Page canvas background.
 
 ---
 
@@ -33,6 +30,7 @@ Many websites and enterprise portals enforce quirky, strict password requirement
 
 **YabadabaPW** gives you precise policy controls without compromising cryptographic randomness:
 
+- **Quick Profiles**: Instant 1-click profiles for *Standard 16*, *URL-Safe 20*, *High Security 32*, and *PIN (6 Digits)*.
 - **Custom Allowed Symbols**: Limit symbols to the exact characters approved by your service (e.g. `#@$`), or use standard comprehensive punctuation.
 - **Leading Character Rules**: Force passwords to start with an uppercase letter, lowercase letter, number, or symbol to satisfy legacy authentication systems.
 - **Ambiguous Character Filter**: Exclude visually confusing characters (`0`, `O`, `o`, `1`, `l`, `I`, `|`, `;`, `:`) to ensure trouble-free manual typing.
