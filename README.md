@@ -1,34 +1,27 @@
 # YabadabaPW 🔐
+### Custom Rule-Compliant Strong Password Generator
 
-**YabadabaPW** is a modern, client-side, zero-tracking Material Design 3 (M3) Password Generator & Vault built as a fast, self-contained Single Page Application (SPA).
+**YabadabaPW** is a fast, client-side, zero-tracking Single Page Application designed to generate cryptographically strong passwords tailored to any website's specific policy rules (such as mandatory start characters, custom symbol constraints, and ambiguous-character filtering) while keeping an offline staging vault.
 
-![Material Design 3](https://img.shields.io/badge/Design-Material%20Design%203-6750A4)
+![Design](https://img.shields.io/badge/Design-Material%20Design%203-6750A4)
 ![Security-Client%20Side](https://img.shields.io/badge/Security-Client--Side%20Web%20Crypto-emerald)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 
 ---
 
-## ✨ Features
+## 🎯 What Makes YabadabaPW Different?
 
-- **True Cryptographic Entropy**: Generates secure random sequences using the browser's native `window.crypto.getRandomValues()`.
-- **Material Design 3 Interface**: Expressive M3 surfaces, rounded containers, dynamic elevation, and clean typography.
-- **Dark & Light Mode**: Seamless theme switching with automatic system preference detection and `localStorage` persistence.
-- **Password Entropy & Strength Meter**: Real-time entropy calculation (in bits) with dynamic strength tier indicators (*Weak*, *Fair*, *Strong*, *Very Strong*).
-- **Flexible Character Sets**:
-  - Uppercase letters (`A-Z`)
-  - Lowercase letters (`a-z`)
-  - Numbers (`0-9`)
-  - Default & custom symbol sets (e.g. `!@#$%^&*...` or user-defined symbols)
-- **Advanced Rules**:
-  - **Exclude Ambiguous Characters**: Eliminates visually confusing characters like `0`, `O`, `o`, `1`, `l`, `I`, `|`, `;`, `:`.
-  - **Leading Character Control**: Enforce whether passwords begin with an uppercase letter, lowercase letter, number, symbol, or random choice.
-  - **Quick Length Presets**: Instant length chips (`12`, `16`, `24`, `32`) plus a continuous slider (`8`–`64` characters).
-- **Persistent Vault Storage**:
-  - Save generated passwords directly to local browser storage (`localStorage`).
-  - Copy individual saved passwords with instant feedback (`✓ Copied`).
-  - Delete individual entries or clear the entire vault.
-  - Export saved vault passwords to `.txt`.
-- **Single Page Application (SPA)**: Zero build step required; runs directly in any browser or static web host.
+Many websites and enterprise portals enforce quirky, strict password requirements (e.g. *"must start with a letter"*, *"only allowed symbols: #@$"*, *"no ambiguous characters"*). Generic password generators often fail these rules, causing repeated signup frustration. 
+
+**YabadabaPW** gives you precise policy controls without compromising cryptographic randomness:
+
+- **Custom Allowed Symbols**: Limit symbols to the exact characters approved by your service (e.g. `#@$`), or use standard comprehensive punctuation.
+- **Leading Character Rules**: Force passwords to start with an uppercase letter, lowercase letter, number, or symbol to satisfy legacy authentication systems.
+- **Ambiguous Character Filter**: Exclude visually confusing characters (`0`, `O`, `o`, `1`, `l`, `I`, `|`, `;`, `:`) to ensure trouble-free manual typing.
+- **True Cryptographic Entropy**: Relies entirely on the native Web Crypto API (`window.crypto.getRandomValues()`) with independent Fisher-Yates array shuffling.
+- **Real-Time Entropy Meter**: Calculates mathematical entropy in bits with real-time feedback (*Weak*, *Fair*, *Strong*, *Very Strong*).
+- **Offline Staging Vault**: Temporarily store, label, copy, and export `.txt` credential sets stored safely in browser `localStorage`.
+- **Zero Network Transmission**: 100% client-side; no credentials, data, or telemetry ever leave your device.
 
 ---
 
@@ -50,7 +43,7 @@ Then visit `http://localhost:8000` in your browser.
 
 ## 🔒 Privacy & Security
 
-YabadabaPW generates all credentials strictly in-memory inside the client browser. No passwords, preferences, or telemetry data are ever transmitted across networks or logged to remote servers.
+YabadabaPW generates all credentials strictly in-memory inside the client browser. No passwords, preferences, or telemetry data are ever transmitted across networks or logged on remote servers.
 
 ---
 
