@@ -3,9 +3,18 @@
 
 **YabadabaPW** is a fast, client-side, zero-tracking Single Page Application designed to generate cryptographically strong passwords tailored to any website's specific policy rules (such as mandatory start characters, custom symbol constraints, and ambiguous-character filtering) while keeping an offline staging vault.
 
-![Design](https://img.shields.io/badge/Design-Material%20Design%203-6750A4)
+![Design](https://img.shields.io/badge/Design-Champagne%20%26%20Obsidian-262220)
 ![Security-Client%20Side](https://img.shields.io/badge/Security-Client--Side%20Web%20Crypto-emerald)
 ![License](https://img.shields.io/badge/License-MIT-blue)
+
+---
+
+## 🏛 Aesthetic: Champagne Beige & Obsidian Black
+
+Designed around soft tones, bold contrasts, and architectural tactile surfaces:
+- **Champagne Beige (Light Mode)**: Warm cashmere silk canvas, travertine cards, and obsidian typography.
+- **Obsidian Black (Dark Mode)**: Velvety volcanic basalt, dark sculpted cards, and champagne silk text.
+- **Editorial Typography**: Cormorant Garamond display serif paired with Plus Jakarta Sans and JetBrains Mono.
 
 ---
 
