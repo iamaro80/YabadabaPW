@@ -9,18 +9,16 @@
 
 ---
 
-## 🎨 Dedicated Aesthetic: Colorion Palette #566
+## 🎨 Available Design Profiles
 
-YabadabaPW features a dedicated design based on **Colorion Palette #566**:
+YabadabaPW includes a live header theme switcher supporting two refined profiles:
 
-- **Pure White (`#FFFFFF`)**: Crisp card surfaces and button typography.
-- **Deep Indigo (`#363671`)**: Primary typography, bold headings, and high-contrast control borders.
-- **Slate Cobalt (`#3E5196`)**: Secondary labels and interactive accents.
-- **Vibrant Watermelon Rose (`#EE537C`)**: High-impact primary action CTA (`Copy`) and secondary metrics.
-- **Warm Coral Peach (`#EB927B`)**: Custom rule badges and warning highlights.
-- **Seafoam Mint (`#8FC9BF`)**: Strength rating badges (`84+ BITS • Very Strong`) and primary progress indicators.
-- **Muted Lavender Slate (`#807E9B`)**: Subtitles, helper text, and subtle dividers.
-- **Light Cloud Slate (`#F8F9FD`)**: Page canvas background.
+1. **🎨 Indigo Rose (Colorion #566)**:
+   - Modern, editorial high-contrast security theme.
+   - Deep Indigo (`#363671`), Watermelon Rose CTA (`#EE537C`), Seafoam Mint (`#8FC9BF`), and Cloud Slate canvas (`#F8F9FD`).
+2. **⚡️ Electric Canary & Emerald (Extracted Theme)**:
+   - High-visibility security aesthetic extracted directly from clean mobile-grade credentials UI.
+   - Canary Yellow CTA (`#FEEA2D`), Electric Blue accents (`#1670EF`), Emerald Green border (`#38B174`), Mint pill (`#E7F4E3` / text `#40864D`), and crisp Charcoal borders (`#2F2F2F`).
 
 ---
 
